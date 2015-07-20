@@ -1,0 +1,23 @@
+{
+    "name": "caridea/bind",
+    "type": "library",
+    "description": "A shrimp of a filter and validation library",
+    "keywords": ["filter", "validate", "validation", "livr"],
+    "version": "0.2.0-dev",
+    "homepage": "http://github.com/libreworks/caridea-bind",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Caridea Contributors",
+            "homepage": "https://github.com/libreworks/caridea-bind/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "Caridea\\Bind\\": "src/"
+        }
+    }
+}
