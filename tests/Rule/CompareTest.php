@@ -117,7 +117,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         $error2 = [21, '42', 20.001];
         foreach ($error2 as $v) {
             $this->assertEquals('TOO_HIGH', $object->apply($v));
-        }        
+        }
     }
 
     /**

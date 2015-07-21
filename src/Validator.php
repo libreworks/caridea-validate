@@ -108,7 +108,7 @@ class Validator
     {
         $errors = $this->iterate($values);
         if (!empty($errors)) {
-            throw new Exception($errors);
+            throw new Exception\Invalid($errors);
         }
     }
 }

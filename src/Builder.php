@@ -66,7 +66,7 @@ class Builder
      */
     public function __construct()
     {
-        $this->register(static::$defaultDefinitions);
+        $this->register(self::$defaultDefinitions);
     }
     
     /**

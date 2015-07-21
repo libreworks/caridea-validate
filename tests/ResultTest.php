@@ -25,6 +25,7 @@ namespace Caridea\Validate;
 class ResultTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @covers Caridea\Validate\Result::__construct
      * @covers Caridea\Validate\Result::hasErrors
      */
     public function testHasErrors()
