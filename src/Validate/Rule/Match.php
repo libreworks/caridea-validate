@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Bind\Validate\Rule;
 
 /**
  * Pattern matching rule.
@@ -25,7 +25,7 @@ namespace Caridea\Bind\Validate;
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class MatchRule implements Rule
+class Match implements \Caridea\Bind\Validate\Rule
 {
     /**
      * @var string The pattern to match
@@ -94,40 +94,40 @@ class MatchRule implements Rule
      * 
      * @param string $pattern An unbounded regular expression (no delimiters!)
      * @param string $flags Any PCRE regex flags (e.g. i, s)
-     * @return \Caridea\Bind\Validate\MatchRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Match the created rule
      */
     public static function like($pattern, $flags = '')
     {
-        return new MatchRule("/$pattern/$flags", 'WRONG_FORMAT');
+        return new Match("/$pattern/$flags", 'WRONG_FORMAT');
     }
 
     /**
      * Gets a rule that matches URLs.
      * 
-     * @return \Caridea\Bind\Validate\MatchRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Match the created rule
      */
     public static function url()
     {
-        return new MatchRule(self::URL, 'WRONG_URL');
+        return new Match(self::URL, 'WRONG_URL');
     }
 
     /**
      * Gets a rule that matches e-mail addresses.
      * 
-     * @return \Caridea\Bind\Validate\MatchRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Match the created rule
      */
     public static function email()
     {
-        return new MatchRule(self::EMAIL, 'WRONG_EMAIL');
+        return new Match(self::EMAIL, 'WRONG_EMAIL');
     }
     
     /**
      * Gets a rule that matches ISO 8601 dates.
      * 
-     * @return \Caridea\Bind\Validate\MatchRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Match the created rule
      */
     public static function isoDate()
     {
-        return new MatchRule(self::DATE, 'WRONG_DATE');
+        return new Match(self::DATE, 'WRONG_DATE');
     }
 }

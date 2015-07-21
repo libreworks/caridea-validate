@@ -17,30 +17,30 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Bind\Validate\Rule;
 
 /**
- * Number related rules.
+ * Compares scalar values to some operand.
  *
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class NumberRule implements Rule
+class Compare implements \Caridea\Bind\Validate\Rule
 {
     /**
      * @var string The operator type
      */
     private $operator;
     /**
-     * @var mixed The optional comparison value
+     * @var mixed The comparison value
      */
     private $operand;
-    
+
     /**
-     * Creates a new NumberRule.
+     * Creates a new CompareRule.
      * 
      * @param string $operator The operator type
-     * @param int|float $operand The optional comparison value
+     * @param mixed $operand Optional comparison value
      */
     protected function __construct($operator, $operand = null)
     {
@@ -56,10 +56,12 @@ class NumberRule implements Rule
      */
     public function apply($value)
     {
-        if (!is_int($value) && !is_float($value) && !is_string($value)) {
+        if (!is_scalar($value)) {
             return 'FORMAT_ERROR';
         }
         switch ($this->operator) {
+            case "in":
+                return in_array($value, $this->operand) ? null : 'NOT_ALLOWED_VALUE';
             case "lt":
                 return $value > $this->operand ? 'TOO_HIGH' : null;
             case "gt":
@@ -85,30 +87,41 @@ class NumberRule implements Rule
                 } elseif ($value === (string)(float)$value) {
                     return ((float) $value) <= 0 ? 'NOT_POSITIVE_DECIMAL' : null;
                 }
-                return 'NOT_POSITIVE_DECIMAL';
+                return 'NOT_POSITIVE_DECIMAL';                
         }
+    }
+
+    /**
+     * Gets a rule that matches a value against a list of accepted values.
+     * 
+     * @param array $values The accepted values
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     */
+    public static function oneOf(array $values)
+    {
+        return new Compare('in', $values);
     }
 
     /**
      * Gets a rule that requires numbers to be no greater than a limit.
      * 
      * @param int|float $value The maximum value
-     * @return \Caridea\Bind\Validate\NumberRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
      */
     public static function max($value)
     {
-        return new NumberRule('lt', $value);
+        return new Compare('lt', $value);
     }
     
     /**
      * Gets a rule that requires numbers to be no less than a limit.
      * 
      * @param int|float $value The minimum value
-     * @return \Caridea\Bind\Validate\NumberRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
      */
     public static function min($value)
     {
-        return new NumberRule('gt', $value);
+        return new Compare('gt', $value);
     }
     
     /**
@@ -116,51 +129,51 @@ class NumberRule implements Rule
      * 
      * @param int|float $min The minimum value, inclusive
      * @param int|float $max The maximum value, inclusive
-     * @return \Caridea\Bind\Validate\NumberRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
      */
     public static function between($min, $max)
     {
         $value = $min > $max ? [$max, $min] : [$min, $max];
-        return new NumberRule('bt', $value);
+        return new Compare('bt', $value);
     }
     
     /**
      * Gets a rule that matches integers and strings with integer values.
      * 
-     * @return \Caridea\Bind\Validate\NumberRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
      */
     public static function integer()
     {
-        return new NumberRule('int');
+        return new Compare('int');
     }
     
     /**
      * Gets a rule that matches positive integers
      * 
-     * @return \Caridea\Bind\Validate\NumberRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
      */
     public static function positiveInteger()
     {
-        return new NumberRule('+int');
+        return new Compare('+int');
     }
     
     /**
      * Gets a rule that matches floats and strings with float values.
      * 
-     * @return \Caridea\Bind\Validate\NumberRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
      */
     public static function decimal()
     {
-        return new NumberRule('float');
+        return new Compare('float');
     }
     
     /**
      * Gets a rule that matches positive floats
      * 
-     * @return \Caridea\Bind\Validate\NumberRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
      */
     public static function positiveDecimal()
     {
-        return new NumberRule('+float');
-    }
+        return new Compare('+float');
+    }    
 }

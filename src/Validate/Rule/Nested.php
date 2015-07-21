@@ -1,0 +1,149 @@
+<?php
+/**
+ * Caridea
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ * 
+ * @copyright 2015 LibreWorks contributors
+ * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ */
+namespace Caridea\Bind\Validate\Rule;
+
+/**
+ * Rules for nested list and object validation.
+ *
+ * @copyright 2015 LibreWorks contributors
+ * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ */
+class Nested implements \Caridea\Bind\Validate\Rule, \Caridea\Bind\Validate\Draft
+{
+    /**
+     * @var string The operator type
+     */
+    private $operator;
+    /**
+     * @var \Caridea\Bind\Validate\Validator Optional. A validator for nested objects.
+     */
+    private $validator;
+    /**
+     * @var string Optional field on object that chooses rules.
+     */
+    private $field;
+    
+    /**
+     * Creates a new NestedRule.
+     * 
+     * @param string $operator The operator type
+     * @param mixed|\Caridea\Bind\Validate\Validator The validator to use, or definitions to create one
+     * @param string $field Optional field on object that chooses rules
+     */
+    protected function __construct($operator, $validator, $field = null)
+    {
+        $this->operator = $operator;
+        $this->validator = $validator;
+        $this->field = $field;
+    }
+
+    /**
+     * Finishes creating a rule using the parent builder.
+     * 
+     * @param \Caridea\Bind\Validate\Builder $builder
+     * @return \Caridea\Bind\Validate\Rule The fully created rule
+     */
+    public function finish(\Caridea\Bind\Validate\Builder $builder)
+    {
+        if ($this->validator instanceof \Caridea\Bind\Validate\Validator) {
+            return $this;
+        } else {
+            $rule = clone $this;
+            switch ($this->operator) {
+                case "nested_object":
+                case "list_objects":
+                    $rule->validator = $builder->build($this->validator);
+                    return $rule;
+                case "list":
+                    $rule->validator = $builder->build((object)['entry' => $this->validator]);
+                    return $rule;
+                case "list_different_objects":
+                    $validators = [];
+                    foreach ($this->validator as $value => $ruleset) {
+                        $validators[$value] = $builder->build($ruleset);
+                    }
+                    $rule->validator = new \Caridea\Bind\Validate\SwitchValidator($this->field, $validators);
+                    return $rule;
+            }
+        }
+    }
+    
+    /**
+     * Validates the provided value.
+     * 
+     * @param mixed $value A value to validate against the rule
+     * @return string An error code, or null if validation succeeded
+     */
+    public function apply($value)
+    {
+        if (!($this->validator instanceof \Caridea\Bind\Validate\Validator)) {
+            throw new \BadMethodCallException("This rule is a Draft. Try calling the 'finish' method to get the full Rule.");
+        }
+        if (!is_array($value) && !($value instanceof \Traversable)) {
+            return 'FORMAT_ERROR';
+        }
+        switch ($this->operator) {
+            case "nested_object":
+                $result = $this->validator->validate($value);
+                return $result->hasErrors() ? $result->getErrors() : null;
+            case "list":
+                $errors = [];
+                foreach ($value as $entry) {
+                    $result = $this->validator->validate(['entry' => $entry]);
+                    $errors[] = $result->hasErrors() ?
+                        $result->getErrors()['entry'] : null;
+                }
+                return array_filter($errors) ? $errors : null;
+            case "list_objects":
+            case "list_different_objects":
+                $errors = [];
+                foreach ($value as $entry) {
+                    try {
+                        $result = $this->validator->validate($entry);
+                        $errors[] = $result->hasErrors() ?
+                            $result->getErrors() : null;
+                    } catch (\InvalidArgumentException $e) {
+                        $errors[] = 'FORMAT_ERROR';
+                    }
+                }
+                return array_filter($errors) ? $errors : null;
+        }
+    }
+    
+    public static function nestedObject($ruleset)
+    {
+        return new Nested("nested_object", $ruleset);
+    }
+    
+    public static function listOf($rules)
+    {
+        return new Nested("list", $rules);
+    }
+    
+    public static function listOfObjects($ruleset)
+    {
+        return new Nested("list_objects", $ruleset);
+    }
+    
+    public static function listOfDifferentObjects($field, $rulesets)
+    {
+        return new Nested('list_different_objects', $rulesets, $field);
+    }
+}

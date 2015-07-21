@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Bind\Validate\Rule;
 
 /**
  * Compares string length to accepted boundaries.
@@ -25,7 +25,7 @@ namespace Caridea\Bind\Validate;
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class LengthRule implements Rule
+class Length implements \Caridea\Bind\Validate\Rule
 {
     /**
      * @var string The operator type
@@ -93,11 +93,11 @@ class LengthRule implements Rule
      * 
      * @param int $length The maximum length
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\LengthRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Length the created rule
      */
     public static function max($length, $encoding = 'UTF-8')
     {
-        return new LengthRule('lt', (int) $length, $encoding);
+        return new Length('lt', (int) $length, $encoding);
     }
     
     /**
@@ -105,11 +105,11 @@ class LengthRule implements Rule
      * 
      * @param int $length The minimum length
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\LengthRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Length the created rule
      */
     public static function min($length, $encoding = 'UTF-8')
     {
-        return new LengthRule('gt', (int) $length, $encoding);
+        return new Length('gt', (int) $length, $encoding);
     }
     
     /**
@@ -117,11 +117,11 @@ class LengthRule implements Rule
      * 
      * @param int $length The required length
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\LengthRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Length the created rule
      */
     public static function equal($length, $encoding = 'UTF-8')
     {
-        return new LengthRule('eq', (int) $length, $encoding);
+        return new Length('eq', (int) $length, $encoding);
     }
     
     /**
@@ -130,12 +130,12 @@ class LengthRule implements Rule
      * @param int $min The minimum length, inclusive
      * @param int $max The maximum length, inclusive
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\LengthRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Length the created rule
      */
     public static function between($min, $max, $encoding = 'UTF-8')
     {
         $length = [(int) $min, (int) $max];
         sort($length);
-        return new LengthRule('bt', $length, $encoding);
+        return new Length('bt', $length, $encoding);
     }
 }

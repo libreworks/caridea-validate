@@ -54,7 +54,7 @@ class Result
      */
     public function hasErrors()
     {
-        return $this->passed;
+        return !$this->passed;
     }
     
     /**

@@ -66,15 +66,15 @@ class Validator
      */
     protected function iterate($values)
     {
-        if ($values === null) {
-            throw new \InvalidArgumentException("Cannot validate null values");
+        if (!is_object($values) && !is_array($values)) {
+            throw new \InvalidArgumentException("Unable to validate provided object");
         }        
         $errors = [];
         foreach ($this->ruleset as $field => $rules) {
             $value = $this->access($values, $field);
             $empty = $value === null || $value === '';
             foreach ($rules as $rule) {
-                $error = (!$empty || $rule instanceof EmptyRule) ?
+                $error = (!$empty || $rule instanceof Rule\Blank) ?
                     $rule->apply($value) : null;
                 if ($error) {
                     $errors[$field] = $error;

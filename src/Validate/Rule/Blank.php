@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Bind\Validate\Rule;
 
 /**
  * Rules for empty values
@@ -25,7 +25,7 @@ namespace Caridea\Bind\Validate;
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class EmptyRule implements Rule
+class Blank implements \Caridea\Bind\Validate\Rule
 {
     /**
      * @var string The operator type
@@ -68,30 +68,30 @@ class EmptyRule implements Rule
     /**
      * Gets a rule that requires values to be non-null and not empty string.
      * 
-     * @return \Caridea\Bind\Validate\EmptyRule the created rule
+     * @return \Caridea\Bind\Validate\Rule\Blank the created rule
      */
     public static function required()
     {
-        return new EmptyRule('required');
+        return new Blank('required');
     }
     
     /**
      * Gets a rule that requires strings to be non-empty.
      *  
-     * @return \Caridea\Bind\Validate\EmptyRule
+     * @return \Caridea\Bind\Validate\Rule\Blank
      */
     public static function notEmpty()
     {
-        return new EmptyRule('empty');
+        return new Blank('empty');
     }
     
     /**
      * Gets a rule that requires an array or `Countable` to be non-empty.
      * 
-     * @return \Caridea\Bind\Validate\EmptyRule
+     * @return \Caridea\Bind\Validate\Rule\Blank
      */
     public static function notEmptyList()
     {
-        return new EmptyRule('list');
+        return new Blank('list');
     }    
 }
