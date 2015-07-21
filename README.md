@@ -40,4 +40,4 @@ We have not implemented aliases (yet?).
 
 ## Examples
 
-Just a few quick examples.
+Just a few quick examples (coming soon).
