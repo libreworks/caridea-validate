@@ -65,7 +65,7 @@ class Match implements \Caridea\Validate\Rule
      * @param string $pattern The pattern to match
      * @param string $error The failure error code
      */
-    public function __construct($pattern, $error)
+    public function __construct($pattern, $error = null)
     {
         $this->pattern = (string) $pattern;
         $this->error = strlen(trim($error)) > 0 ? (string) $error : 'WRONG_FORMAT';

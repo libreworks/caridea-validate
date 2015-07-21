@@ -61,7 +61,7 @@ class Compare implements \Caridea\Validate\Rule
         }
         switch ($this->operator) {
             case "in":
-                return in_array($value, $this->operand) ? null : 'NOT_ALLOWED_VALUE';
+                return in_array($value, $this->operand, true) ? null : 'NOT_ALLOWED_VALUE';
             case "lt":
                 return $value > $this->operand ? 'TOO_HIGH' : null;
             case "gt":
@@ -74,15 +74,16 @@ class Compare implements \Caridea\Validate\Rule
                 }
                 return null;
             case "int":
-                return is_int($value) || ctype_digit(trim($value, '-+')) ?
+                return is_int($value) || ctype_digit(ltrim($value, '-+')) ?
                     null : 'NOT_INTEGER';
             case "+int":
-                return ((int) $value) <= 0 ? 'NOT_POSITIVE_INTEGER' : null;
+                return (is_int($value) || ctype_digit(ltrim($value, '-+'))) &&
+                    ((int) $value) > 0 ? null : 'NOT_POSITIVE_INTEGER';
             case "float":
                 return is_float($value) || ($value === (string)(float)$value) ?
                     null : 'NOT_DECIMAL';
             case "+float":
-                if (is_float($value) || is_int($value)) {
+                if (is_float($value)) {
                     return $value <= 0 ? 'NOT_POSITIVE_DECIMAL' : null;
                 } elseif ($value === (string)(float)$value) {
                     return ((float) $value) <= 0 ? 'NOT_POSITIVE_DECIMAL' : null;
