@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate\Rule;
+namespace Caridea\Validate\Rule;
 
 /**
  * Compares scalar values to some operand.
@@ -25,7 +25,7 @@ namespace Caridea\Bind\Validate\Rule;
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class Compare implements \Caridea\Bind\Validate\Rule
+class Compare implements \Caridea\Validate\Rule
 {
     /**
      * @var string The operator type
@@ -95,7 +95,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
      * Gets a rule that matches a value against a list of accepted values.
      * 
      * @param array $values The accepted values
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function oneOf(array $values)
     {
@@ -106,7 +106,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
      * Gets a rule that requires numbers to be no greater than a limit.
      * 
      * @param int|float $value The maximum value
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function max($value)
     {
@@ -117,7 +117,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
      * Gets a rule that requires numbers to be no less than a limit.
      * 
      * @param int|float $value The minimum value
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function min($value)
     {
@@ -129,7 +129,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
      * 
      * @param int|float $min The minimum value, inclusive
      * @param int|float $max The maximum value, inclusive
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function between($min, $max)
     {
@@ -140,7 +140,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
     /**
      * Gets a rule that matches integers and strings with integer values.
      * 
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function integer()
     {
@@ -150,7 +150,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
     /**
      * Gets a rule that matches positive integers
      * 
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function positiveInteger()
     {
@@ -160,7 +160,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
     /**
      * Gets a rule that matches floats and strings with float values.
      * 
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function decimal()
     {
@@ -170,7 +170,7 @@ class Compare implements \Caridea\Bind\Validate\Rule
     /**
      * Gets a rule that matches positive floats
      * 
-     * @return \Caridea\Bind\Validate\Rule\Compare the created rule
+     * @return \Caridea\Validate\Rule\Compare the created rule
      */
     public static function positiveDecimal()
     {

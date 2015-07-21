@@ -17,21 +17,39 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Validate\Exception;
 
 /**
- * Immutable validation rule logic.
- * 
+ * Validation Exception
+ *
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-interface Rule
+class Invalid extends \UnexpectedValueException implements \Caridea\Bind\Exception
 {
     /**
-     * Validates the provided value.
-     * 
-     * @param mixed $value A value to validate against the rule
-     * @return string An error code, or null if validation succeeded
+     * @var array $errors Associative array of field name to error
      */
-    public function apply($value);
+    private $errors;
+
+    /**
+     * Creates a new Validation exception.
+     * 
+     * @param array $errors Associative array of field name to error
+     */
+    public function __construct(array $errors)
+    {
+        parent::__construct("Validation failed: " . json_encode($errors));
+        $this->errors = $errors;
+    }
+    
+    /**
+     * Gets the failed validation errors.
+     * 
+     * @return array Associative array of field name to error
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
 }

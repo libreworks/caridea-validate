@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Validate;
 
 /**
  * Builds validators.
@@ -36,29 +36,29 @@ class Builder
      * @var array Associative array of definition name to function callback
      */
     private static $defaultDefinitions = [
-        'required'         => ['Caridea\Bind\Validate\Rule\Blank', 'required'],
-        'not_empty'        => ['Caridea\Bind\Validate\Rule\Blank', 'notEmpty'],
-        'not_empty_list'   => ['Caridea\Bind\Validate\Rule\Blank', 'notEmptyList'],
-        'one_of'           => ['Caridea\Bind\Validate\Rule\Compare', 'oneOf'],
-        'min_length'       => ['Caridea\Bind\Validate\Rule\Length', 'min'],
-        'max_length'       => ['Caridea\Bind\Validate\Rule\Length', 'max'],
-        'length_equal'     => ['Caridea\Bind\Validate\Rule\Length', 'equal'],
-        'length_between'   => ['Caridea\Bind\Validate\Rule\Length', 'between'],
-        'like'             => ['Caridea\Bind\Validate\Rule\Match', 'like'],
-        'integer'          => ['Caridea\Bind\Validate\Rule\Compare', 'integer'],
-        'positive_integer' => ['Caridea\Bind\Validate\Rule\Compare', 'positiveInteger'],
-        'decimal'          => ['Caridea\Bind\Validate\Rule\Compare', 'decimal'],
-        'positive_decimal' => ['Caridea\Bind\Validate\Rule\Compare', 'positiveDecimal'],
-        'min_number'       => ['Caridea\Bind\Validate\Rule\Compare', 'min'],
-        'max_number'       => ['Caridea\Bind\Validate\Rule\Compare', 'max'],
-        'number_between'   => ['Caridea\Bind\Validate\Rule\Compare', 'between'],
-        'email'            => ['Caridea\Bind\Validate\Rule\Match', 'email'],
-        'iso_date'         => ['Caridea\Bind\Validate\Rule\Match', 'isoDate'],
-        'url'              => ['Caridea\Bind\Validate\Rule\Match', 'url'],
-        'nested_object'    => ['Caridea\Bind\Validate\Rule\Nested', 'nestedObject'],
-        'list_of'          => ['Caridea\Bind\Validate\Rule\Nested', 'listOf'],
-        'list_of_objects'  => ['Caridea\Bind\Validate\Rule\Nested', 'listOfObjects'],
-        'list_of_different_objects' => ['Caridea\Bind\Validate\Rule\Nested', 'listOfDifferentObjects'],
+        'required'         => ['Caridea\Validate\Rule\Blank', 'required'],
+        'not_empty'        => ['Caridea\Validate\Rule\Blank', 'notEmpty'],
+        'not_empty_list'   => ['Caridea\Validate\Rule\Blank', 'notEmptyList'],
+        'one_of'           => ['Caridea\Validate\Rule\Compare', 'oneOf'],
+        'min_length'       => ['Caridea\Validate\Rule\Length', 'min'],
+        'max_length'       => ['Caridea\Validate\Rule\Length', 'max'],
+        'length_equal'     => ['Caridea\Validate\Rule\Length', 'equal'],
+        'length_between'   => ['Caridea\Validate\Rule\Length', 'between'],
+        'like'             => ['Caridea\Validate\Rule\Match', 'like'],
+        'integer'          => ['Caridea\Validate\Rule\Compare', 'integer'],
+        'positive_integer' => ['Caridea\Validate\Rule\Compare', 'positiveInteger'],
+        'decimal'          => ['Caridea\Validate\Rule\Compare', 'decimal'],
+        'positive_decimal' => ['Caridea\Validate\Rule\Compare', 'positiveDecimal'],
+        'min_number'       => ['Caridea\Validate\Rule\Compare', 'min'],
+        'max_number'       => ['Caridea\Validate\Rule\Compare', 'max'],
+        'number_between'   => ['Caridea\Validate\Rule\Compare', 'between'],
+        'email'            => ['Caridea\Validate\Rule\Match', 'email'],
+        'iso_date'         => ['Caridea\Validate\Rule\Match', 'isoDate'],
+        'url'              => ['Caridea\Validate\Rule\Match', 'url'],
+        'nested_object'    => ['Caridea\Validate\Rule\Nested', 'nestedObject'],
+        'list_of'          => ['Caridea\Validate\Rule\Nested', 'listOf'],
+        'list_of_objects'  => ['Caridea\Validate\Rule\Nested', 'listOfObjects'],
+        'list_of_different_objects' => ['Caridea\Validate\Rule\Nested', 'listOfDifferentObjects'],
     ];
     
     /**
@@ -73,7 +73,7 @@ class Builder
      * Registers rule definitions.
      * 
      * ```php
-     * $builder = new \Caridea\Bind\Validate\Builder();
+     * $builder = new \Caridea\Validate\Builder();
      * $builder->register([
      *     'adult' => ['My\Validate\AgeRule', 'adult'],
      *     'credit_card' => function(){return new CreditCardRule();},
@@ -106,14 +106,14 @@ class Builder
      * ```
      * ```php
      * $ruleset = json_decode(file_get_contents('rules.json'));
-     * $builder = new \Caridea\Bind\Validate\Builder();
+     * $builder = new \Caridea\Validate\Builder();
      * $validator = $builder->build($ruleset);
      * ```
      * Currently, this function only supports JSON hashes as PHP objects, not
      * PHP associative arrays.
      * 
      * @param object $ruleset Object (as returned from `json_decode`) with ruleset
-     * @return \Caridea\Bind\Validate\Validator the built validator
+     * @return \Caridea\Validate\Validator the built validator
      */
     public function build($ruleset)
     {

@@ -1,8 +1,8 @@
 {
-    "name": "caridea/bind",
+    "name": "caridea/validate",
     "type": "library",
-    "description": "A shrimp of a filter and validation library",
-    "keywords": ["filter", "validate", "validation", "livr"],
+    "description": "A shrimp of a validation library",
+    "keywords": ["validate", "validation", "livr"],
     "version": "0.2.0-dev",
     "homepage": "http://github.com/libreworks/caridea-bind",
     "license": "Apache-2.0",
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-          "Caridea\\Bind\\": "src/"
+          "Caridea\\Validate\\": "src/"
         }
     }
 }

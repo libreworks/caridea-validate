@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate\Rule;
+namespace Caridea\Validate\Rule;
 
 /**
  * Compares string length to accepted boundaries.
@@ -25,7 +25,7 @@ namespace Caridea\Bind\Validate\Rule;
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class Length implements \Caridea\Bind\Validate\Rule
+class Length implements \Caridea\Validate\Rule
 {
     /**
      * @var string The operator type
@@ -93,7 +93,7 @@ class Length implements \Caridea\Bind\Validate\Rule
      * 
      * @param int $length The maximum length
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\Rule\Length the created rule
+     * @return \Caridea\Validate\Rule\Length the created rule
      */
     public static function max($length, $encoding = 'UTF-8')
     {
@@ -105,7 +105,7 @@ class Length implements \Caridea\Bind\Validate\Rule
      * 
      * @param int $length The minimum length
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\Rule\Length the created rule
+     * @return \Caridea\Validate\Rule\Length the created rule
      */
     public static function min($length, $encoding = 'UTF-8')
     {
@@ -117,7 +117,7 @@ class Length implements \Caridea\Bind\Validate\Rule
      * 
      * @param int $length The required length
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\Rule\Length the created rule
+     * @return \Caridea\Validate\Rule\Length the created rule
      */
     public static function equal($length, $encoding = 'UTF-8')
     {
@@ -130,7 +130,7 @@ class Length implements \Caridea\Bind\Validate\Rule
      * @param int $min The minimum length, inclusive
      * @param int $max The maximum length, inclusive
      * @param string $encoding The string encoding
-     * @return \Caridea\Bind\Validate\Rule\Length the created rule
+     * @return \Caridea\Validate\Rule\Length the created rule
      */
     public static function between($min, $max, $encoding = 'UTF-8')
     {

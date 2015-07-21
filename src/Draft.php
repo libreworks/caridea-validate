@@ -17,39 +17,21 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Validate;
 
 /**
- * Validation Exception
+ * A draft rule. It needs the builder and its definitions to continue.
  *
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class Exception extends \UnexpectedValueException implements \Caridea\Bind\Exception
+interface Draft
 {
     /**
-     * @var array $errors Associative array of field name to error
-     */
-    private $errors;
-
-    /**
-     * Creates a new Validation exception.
+     * Finishes creating a rule using the parent builder.
      * 
-     * @param array $errors Associative array of field name to error
+     * @param \Caridea\Validate\Builder $builder
+     * @return \Caridea\Validate\Rule The fully created rule
      */
-    public function __construct(array $errors)
-    {
-        parent::__construct("Validation failed: " . json_encode($errors));
-        $this->errors = $errors;
-    }
-    
-    /**
-     * Gets the failed validation errors.
-     * 
-     * @return array Associative array of field name to error
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
+    public function finish(Builder $builder);
 }

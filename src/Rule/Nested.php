@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate\Rule;
+namespace Caridea\Validate\Rule;
 
 /**
  * Rules for nested list and object validation.
@@ -25,14 +25,14 @@ namespace Caridea\Bind\Validate\Rule;
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class Nested implements \Caridea\Bind\Validate\Rule, \Caridea\Bind\Validate\Draft
+class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
 {
     /**
      * @var string The operator type
      */
     private $operator;
     /**
-     * @var \Caridea\Bind\Validate\Validator Optional. A validator for nested objects.
+     * @var \Caridea\Validate\Validator Optional. A validator for nested objects.
      */
     private $validator;
     /**
@@ -44,7 +44,7 @@ class Nested implements \Caridea\Bind\Validate\Rule, \Caridea\Bind\Validate\Draf
      * Creates a new NestedRule.
      * 
      * @param string $operator The operator type
-     * @param mixed|\Caridea\Bind\Validate\Validator The validator to use, or definitions to create one
+     * @param mixed|\Caridea\Validate\Validator The validator to use, or definitions to create one
      * @param string $field Optional field on object that chooses rules
      */
     protected function __construct($operator, $validator, $field = null)
@@ -57,12 +57,12 @@ class Nested implements \Caridea\Bind\Validate\Rule, \Caridea\Bind\Validate\Draf
     /**
      * Finishes creating a rule using the parent builder.
      * 
-     * @param \Caridea\Bind\Validate\Builder $builder
-     * @return \Caridea\Bind\Validate\Rule The fully created rule
+     * @param \Caridea\Validate\Builder $builder
+     * @return \Caridea\Validate\Rule The fully created rule
      */
-    public function finish(\Caridea\Bind\Validate\Builder $builder)
+    public function finish(\Caridea\Validate\Builder $builder)
     {
-        if ($this->validator instanceof \Caridea\Bind\Validate\Validator) {
+        if ($this->validator instanceof \Caridea\Validate\Validator) {
             return $this;
         } else {
             $rule = clone $this;
@@ -79,7 +79,7 @@ class Nested implements \Caridea\Bind\Validate\Rule, \Caridea\Bind\Validate\Draf
                     foreach ($this->validator as $value => $ruleset) {
                         $validators[$value] = $builder->build($ruleset);
                     }
-                    $rule->validator = new \Caridea\Bind\Validate\SwitchValidator($this->field, $validators);
+                    $rule->validator = new \Caridea\Validate\SwitchValidator($this->field, $validators);
                     return $rule;
             }
         }
@@ -93,7 +93,7 @@ class Nested implements \Caridea\Bind\Validate\Rule, \Caridea\Bind\Validate\Draf
      */
     public function apply($value)
     {
-        if (!($this->validator instanceof \Caridea\Bind\Validate\Validator)) {
+        if (!($this->validator instanceof \Caridea\Validate\Validator)) {
             throw new \BadMethodCallException("This rule is a Draft. Try calling the 'finish' method to get the full Rule.");
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {

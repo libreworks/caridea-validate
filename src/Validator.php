@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Validate;
 
 /**
  * An immutable set of rules for a set of fields that can validate data.
@@ -89,7 +89,7 @@ class Validator
      * Validates the provided value, returning a result object.
      * 
      * @param object|array $values An object or associative array to validate
-     * @return \Caridea\Bind\Validate\Result The validation results
+     * @return \Caridea\Validate\Result The validation results
      * @throws \InvalidArgumentException if `$values` is null
      */
     public function validate($values)
@@ -101,7 +101,7 @@ class Validator
      * Validates the provided value, throwing an exception upon failure.
      * 
      * @param object|array $values An object or associative array to validate
-     * @throws \Caridea\Bind\Validate\Exception if validation fails
+     * @throws \Caridea\Validate\Exception\Invalid if validation fails
      * @throws \InvalidArgumentException if `$values` is null
      */
     public function assert($values)

@@ -17,7 +17,7 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate\Rule;
+namespace Caridea\Validate\Rule;
 
 /**
  * Pattern matching rule.
@@ -25,7 +25,7 @@ namespace Caridea\Bind\Validate\Rule;
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class Match implements \Caridea\Bind\Validate\Rule
+class Match implements \Caridea\Validate\Rule
 {
     /**
      * @var string The pattern to match
@@ -94,7 +94,7 @@ class Match implements \Caridea\Bind\Validate\Rule
      * 
      * @param string $pattern An unbounded regular expression (no delimiters!)
      * @param string $flags Any PCRE regex flags (e.g. i, s)
-     * @return \Caridea\Bind\Validate\Rule\Match the created rule
+     * @return \Caridea\Validate\Rule\Match the created rule
      */
     public static function like($pattern, $flags = '')
     {
@@ -104,7 +104,7 @@ class Match implements \Caridea\Bind\Validate\Rule
     /**
      * Gets a rule that matches URLs.
      * 
-     * @return \Caridea\Bind\Validate\Rule\Match the created rule
+     * @return \Caridea\Validate\Rule\Match the created rule
      */
     public static function url()
     {
@@ -114,7 +114,7 @@ class Match implements \Caridea\Bind\Validate\Rule
     /**
      * Gets a rule that matches e-mail addresses.
      * 
-     * @return \Caridea\Bind\Validate\Rule\Match the created rule
+     * @return \Caridea\Validate\Rule\Match the created rule
      */
     public static function email()
     {
@@ -124,7 +124,7 @@ class Match implements \Caridea\Bind\Validate\Rule
     /**
      * Gets a rule that matches ISO 8601 dates.
      * 
-     * @return \Caridea\Bind\Validate\Rule\Match the created rule
+     * @return \Caridea\Validate\Rule\Match the created rule
      */
     public static function isoDate()
     {

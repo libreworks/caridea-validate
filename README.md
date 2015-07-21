@@ -1,9 +1,9 @@
-# caridea-bind
+# caridea-validate
 Caridea is a miniscule PHP application library. This shrimpy fellow is what you'd use when you just want some helping hands and not a full-blown framework.
 
 ![](http://libreworks.com/caridea-100.png)
 
-This is its filter and validation library.
+This is its validation library.
 
 It supports [LIVR rules](https://github.com/koorchik/LIVR) with some exceptions. See the Compliance → _LIVR_ section below.
 
@@ -12,7 +12,7 @@ It supports [LIVR rules](https://github.com/koorchik/LIVR) with some exceptions.
 You can install this library using Composer:
 
 ```console
-$ composer require caridea/bind
+$ composer require caridea/validate
 ```
 
 This project requires PHP 5.5 and has no dependencies.

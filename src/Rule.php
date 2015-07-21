@@ -17,21 +17,21 @@
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-namespace Caridea\Bind\Validate;
+namespace Caridea\Validate;
 
 /**
- * A draft rule. It needs the builder and its definitions to continue.
- *
+ * Immutable validation rule logic.
+ * 
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-interface Draft
+interface Rule
 {
     /**
-     * Finishes creating a rule using the parent builder.
+     * Validates the provided value.
      * 
-     * @param \Caridea\Bind\Validate\Builder $builder
-     * @return \Caridea\Bind\Validate\Rule The fully created rule
+     * @param mixed $value A value to validate against the rule
+     * @return string An error code, or null if validation succeeded
      */
-    public function finish(Builder $builder);
+    public function apply($value);
 }
