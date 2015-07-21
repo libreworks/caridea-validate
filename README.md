@@ -7,6 +7,10 @@ This is its validation library.
 
 It supports [LIVR rules](https://github.com/koorchik/LIVR) with some exceptions. See the Compliance → _LIVR_ section below.
 
+[![Build Status](https://travis-ci.org/libreworks/caridea-validate.svg)](https://travis-ci.org/libreworks/caridea-validate)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/libreworks/caridea-validate/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/libreworks/caridea-validate/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/libreworks/caridea-validate/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/libreworks/caridea-validate/?branch=master)
+
 ## Installation
 
 You can install this library using Composer:
