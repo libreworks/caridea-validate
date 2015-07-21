@@ -1,19 +1,19 @@
 <?php
 /**
  * Caridea
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
- * 
+ *
  * @copyright 2015 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
@@ -42,7 +42,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
     
     /**
      * Creates a new NestedRule.
-     * 
+     *
      * @param string $operator The operator type
      * @param mixed|\Caridea\Validate\Validator The validator to use, or definitions to create one
      * @param string $field Optional field on object that chooses rules
@@ -56,7 +56,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
 
     /**
      * Finishes creating a rule using the parent builder.
-     * 
+     *
      * @param \Caridea\Validate\Builder $builder
      * @return \Caridea\Validate\Rule The fully created rule
      */
@@ -87,7 +87,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
     
     /**
      * Validates the provided value.
-     * 
+     *
      * @param mixed $value A value to validate against the rule
      * @return string An error code, or null if validation succeeded
      */
@@ -127,21 +127,46 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
         }
     }
     
+    /**
+     * Verifies an object value against separate validator rules.
+     *
+     * @param object $ruleset The validation ruleset
+     * @return \Caridea\Validate\Rule\Nested the created rule
+     */
     public static function nestedObject($ruleset)
     {
         return new Nested("nested_object", $ruleset);
     }
     
+    /**
+     * Verifies each entry in a list using one or more rules.
+     *
+     * @param mixed $rules The rule or rules to enforce
+     * @return \Caridea\Validate\Rule\Nested the created rule
+     */
     public static function listOf($rules)
     {
         return new Nested("list", $rules);
     }
     
+    /**
+     * Verifies each entry in a list against separate validator rules.
+     *
+     * @param object $ruleset The validation ruleset
+     * @return \Caridea\Validate\Rule\Nested the created rule
+     */
     public static function listOfObjects($ruleset)
     {
         return new Nested("list_objects", $ruleset);
     }
     
+    /**
+     * Verifies each entry in a list using one of several validators based on a field value.
+     *
+     * @param string $field The deciding field name
+     * @param object $rulesets The rulesets
+     * @return \Caridea\Validate\Rule\Nested the created rule
+     */
     public static function listOfDifferentObjects($field, $rulesets)
     {
         return new Nested('list_different_objects', $rulesets, $field);
