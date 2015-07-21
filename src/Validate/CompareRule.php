@@ -37,23 +37,6 @@ class CompareRule implements Rule
     private $operand;
 
     /**
-     * Modified version of the Regular Expression for URL validation.
-     * 
-     * @var string Regular Expression to match URLs
-     * @copyright 2010-2013 Diego Perini (http://www.iport.it)
-     * @license http://opensource.org/licenses/MIT MIT License
-     * @link https://gist.github.com/dperini/729294 GitHub gist
-     */
-    private static $urlPattern = "_^(?:https?://)(?:\\S+(?::\\S*)?@)?(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\x{00a1}-\\x{ffff}0-9]-*)*[a-z\\x{00a1}-\\x{ffff}0-9]+)(?:\\.(?:[a-z\\x{00a1}-\\x{ffff}0-9]-*)*[a-z\\x{00a1}-\\x{ffff}0-9]+)*(?:\\.(?:[a-z\\x{00a1}-\\x{ffff}]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?\$_iuS";
-    /**
-     * RegEx taken from HTML5 spec for email input type.
-     * 
-     * @var string Regular Expression to match e-mails
-     * @link http://www.w3.org/TR/html5/forms.html#e-mail-state-%28type=email%29 HTML5 Form Specification
-     */
-    private static $emailPattern = '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/';
-    
-    /**
      * Creates a new CompareRule.
      * 
      * @param string $operator The operator type
@@ -77,40 +60,9 @@ class CompareRule implements Rule
             return 'FORMAT_ERROR';
         }
         switch ($this->operator) {
-            case "re":
-                return preg_match($this->operand, $value) ? null : 'WRONG_FORMAT';
             case "in":
                 return in_array($value, $this->operand) ? null : 'NOT_ALLOWED_VALUE';
-            case "dt":
-                $matched = [];
-                if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value, $matched)) {
-                    $d = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
-                    if ($d->format('Y-m-d') === $value) {
-                        return null;
-                    }
-                }
-                return 'WRONG_DATE';
-            case "url":
-                return preg_match(self::$urlPattern, $value) ? null : 'WRONG_URL';
-            case "email":
-                return preg_match(self::$emailPattern, $value) ? null : 'WRONG_EMAIL';
         }
-    }
-    
-    /**
-     * Gets a regular expression matching rule.
-     * 
-     * ```php
-     * $rule = CompareRule::matches("^[a-z]$", "i");
-     * ```
-     * 
-     * @param string $pattern An unbounded regular expression (no delimiters!)
-     * @param string $flags Any PCRE regex flags (e.g. i, s)
-     * @return \Caridea\Bind\Validate\CompareRule the created rule
-     */
-    public static function matches($pattern, $flags = '')
-    {
-        return new CompareRule('re', "/$pattern/$flags");
     }
 
     /**
@@ -122,35 +74,5 @@ class CompareRule implements Rule
     public static function oneOf(array $values)
     {
         return new CompareRule('in', $values);
-    }
-    
-    /**
-     * Gets a rule that matches ISO 8601 dates.
-     * 
-     * @return \Caridea\Bind\Validate\CompareRule the created rule
-     */
-    public static function isoDate()
-    {
-        return new CompareRule('dt');
-    }
-    
-    /**
-     * Gets a rule that matches URLs.
-     * 
-     * @return \Caridea\Bind\Validate\CompareRule the created rule
-     */
-    public static function url()
-    {
-        return new CompareRule('url');
-    }
-    
-    /**
-     * Gets a rule that matches e-mail addresses.
-     * 
-     * @return \Caridea\Bind\Validate\CompareRule the created rule
-     */
-    public static function email()
-    {
-        return new CompareRule('email');
     }
 }

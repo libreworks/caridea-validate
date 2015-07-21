@@ -44,7 +44,7 @@ class Builder
         'max_length'       => ['Caridea\Bind\Validate\LengthRule', 'max'],
         'length_equal'     => ['Caridea\Bind\Validate\LengthRule', 'equal'],
         'length_between'   => ['Caridea\Bind\Validate\LengthRule', 'between'],
-        'like'             => ['Caridea\Bind\Validate\CompareRule', 'matches'],
+        'like'             => ['Caridea\Bind\Validate\MatchRule', 'like'],
         'integer'          => ['Caridea\Bind\Validate\NumberRule', 'integer'],
         'positive_integer' => ['Caridea\Bind\Validate\NumberRule', 'positiveInteger'],
         'decimal'          => ['Caridea\Bind\Validate\NumberRule', 'decimal'],
@@ -52,9 +52,9 @@ class Builder
         'min_number'       => ['Caridea\Bind\Validate\NumberRule', 'min'],
         'max_number'       => ['Caridea\Bind\Validate\NumberRule', 'max'],
         'number_between'   => ['Caridea\Bind\Validate\NumberRule', 'between'],
-        'email'            => ['Caridea\Bind\Validate\CompareRule', 'email'],
-        'iso_date'         => ['Caridea\Bind\Validate\CompareRule', 'isoDate'],
-        'url'              => ['Caridea\Bind\Validate\CompareRule', 'url'],
+        'email'            => ['Caridea\Bind\Validate\MatchRule', 'email'],
+        'iso_date'         => ['Caridea\Bind\Validate\MatchRule', 'isoDate'],
+        'url'              => ['Caridea\Bind\Validate\MatchRule', 'url'],
     ];
     
     /**
@@ -96,10 +96,8 @@ class Builder
      * {
      *     name: 'required',
      *     email: ['required', 'email'],
-     *     gender: { one_of: ['male', 'female'] },
-     *     phone: {max_length: 10},
-     *     password: ['required', {min_length: 10} ]
-     *     password2: { equal_to_field: 'password' }
+     *     drinks: { one_of: [['coffee', 'tea']] },
+     *     phone: {max_length: 10}
      * }
      * ```
      * ```php
@@ -144,16 +142,20 @@ class Builder
         $rules = [];
         if (is_string($rule)) {
             if (isset($this->definitions[$rule])) {
-                $rules[] = is_array($arg) ?
+                $vrule = is_array($arg) ?
                     call_user_func_array($this->definitions[$rule], $arg) :
                     call_user_func($this->definitions[$rule], $arg);
+                if ($vrule instanceof Draft) {
+                    $vrule = $vrule->finish($this);
+                } elseif (!$vrule instanceof Rule) {
+                    throw new \UnexpectedValueException('Definitions must return Rule objects');
+                }
+                $rules[] = $vrule;
             }
         } elseif (is_object($rule)) {
-            $rules = [];
             foreach ($rule as $name => $args) {
                 $rules = array_merge($rules, $this->getRule($name, $args));
             }
-            return $rules;
         }
         return $rules;
     }

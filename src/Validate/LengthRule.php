@@ -79,9 +79,9 @@ class LengthRule implements Rule
                 }
                 return null;
             case "bt":
-                if ($length > max($this->length)) {
+                if ($length > $this->length[1]) {
                     return 'TOO_LONG';
-                } elseif ($length < min($this->length)) {
+                } elseif ($length < $this->length[0]) {
                     return 'TOO_SHORT';
                 }
                 return null;
@@ -134,6 +134,8 @@ class LengthRule implements Rule
      */
     public static function between($min, $max, $encoding = 'UTF-8')
     {
-        return new LengthRule('bt', [(int) $min, (int) $max], $encoding);
+        $length = [(int) $min, (int) $max];
+        sort($length);
+        return new LengthRule('bt', $length, $encoding);
     }
 }

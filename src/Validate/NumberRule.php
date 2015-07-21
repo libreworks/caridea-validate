@@ -65,9 +65,9 @@ class NumberRule implements Rule
             case "gt":
                 return $value < $this->operand ? 'TOO_LOW' : null;
             case "bt":
-                if ($value > max($this->operand)) {
+                if ($value > $this->operand[1]) {
                     return 'TOO_HIGH';
-                } elseif ($value < min($this->operand)) {
+                } elseif ($value < $this->operand[0]) {
                     return 'TOO_LOW';
                 }
                 return null;
@@ -120,7 +120,8 @@ class NumberRule implements Rule
      */
     public static function between($min, $max)
     {
-        return new NumberRule('bt', [$min, $max]);
+        $value = $min > $max ? [$max, $min] : [$min, $max];
+        return new NumberRule('bt', $value);
     }
     
     /**
