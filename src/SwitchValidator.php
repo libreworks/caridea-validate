@@ -28,7 +28,7 @@ namespace Caridea\Validate;
 class SwitchValidator extends Validator
 {
     /**
-     * @var string Associative array of field name to list of rules
+     * @var string Field name to inspect
      */
     protected $field;
     /**
@@ -39,7 +39,8 @@ class SwitchValidator extends Validator
     /**
      * Creates a new switch validator.
      *
-     * @param array $ruleset Associative array of field name to list of rules
+     * @param string Field name to inspect
+     * @param array $validators Associative array of field value to validator
      */
     public function __construct($field, array $validators)
     {

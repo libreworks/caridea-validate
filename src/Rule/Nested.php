@@ -89,7 +89,8 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * Validates the provided value.
      *
      * @param mixed $value A value to validate against the rule
-     * @return string An error code, or null if validation succeeded
+     * @return array|string An array of error codes, a single error code, or
+     *     null if validation succeeded
      */
     public function apply($value)
     {
