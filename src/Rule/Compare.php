@@ -52,11 +52,16 @@ class Compare implements \Caridea\Validate\Rule
      * Validates the provided value.
      *
      * @param mixed $value A value to validate against the rule
+     * @param array|object $data The dataset which contains this field
      * @return array|string An array of error codes, a single error code, or
      *     null if validation succeeded
      */
-    public function apply($value)
+    public function apply($value, $data = [])
     {
+        if ("eqf" === $this->operator) {
+            return $value === $this->access($data, $this->operand) ?
+                null : 'FIELDS_NOT_EQUAL';
+        }
         if (!is_scalar($value)) {
             return 'FORMAT_ERROR';
         }
@@ -91,6 +96,21 @@ class Compare implements \Caridea\Validate\Rule
                 }
                 return 'NOT_POSITIVE_DECIMAL';
         }
+    }
+    
+    /**
+     * Gets a field from the values.
+     *
+     * This can be overridden to access by other means (e.g. object properties,
+     * getter methods).
+     *
+     * @param mixed $values The values
+     * @param string $field The field to access
+     * @return mixed The accessed value
+     */
+    protected function access($values, $field)
+    {
+        return isset($values[$field]) ? $values[$field] : null;
     }
 
     /**
@@ -177,5 +197,16 @@ class Compare implements \Caridea\Validate\Rule
     public static function positiveDecimal()
     {
         return new Compare('+float');
+    }
+    
+    /**
+     * Gets a rule that compares two fields for equality
+     *
+     * @param string $field The other field whose value will be compared
+     * @return \Caridea\Validate\Rule\Compare the created rule
+     */
+    public static function equalToField($field)
+    {
+        return new Compare('eqf', $field);
     }
 }

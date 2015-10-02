@@ -33,7 +33,6 @@ We fully support the JSON rule format as defined by the LIVR spec. However, we d
 
 For the most part, we support all rules and their return codes as defined by the spec with some notable exceptions. We did not implement the following rules:
 
-* `equal_to_field` – In our opinion, this is only used for password fields and should not be part of validation logic.
 * `trim` – This is part of filtering, not validation. 
 * `to_lc` – This is part of filtering, not validation. 
 * `to_uc` – This is part of filtering, not validation. 

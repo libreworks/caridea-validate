@@ -37,12 +37,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             'email' => ['required', 'email'],
             'gender' => (object)[ 'one_of' => [['female']] ],
             'phone' => (object)['max_length' => 10],
+            'password2' => (object)['equal_to_field' => 'password']
         ];
         $object= new Builder();
         $this->assertSame($object, $object->register(['max_length', [Rule\Length::class, 'max']]));
         $validator = $object->build($ruleset);
-        $result = $validator->validate(['name' => null, 'email' => 'foo', 'gender' => 'male', 'phone' => '123123123123']);
-        $this->assertEquals(['name' => 'REQUIRED', 'email' => 'WRONG_EMAIL', 'gender' => 'NOT_ALLOWED_VALUE', 'phone' => 'TOO_LONG'], $result->getErrors());
+        $result = $validator->validate(['name' => null, 'email' => 'foo', 'gender' => 'male', 'phone' => '123123123123', 'password' => 'hello', 'password2' => 'goodbye']);
+        $this->assertEquals(['name' => 'REQUIRED', 'email' => 'WRONG_EMAIL', 'gender' => 'NOT_ALLOWED_VALUE', 'phone' => 'TOO_LONG', 'password2' => 'FIELDS_NOT_EQUAL'], $result->getErrors());
     }
     
     /**

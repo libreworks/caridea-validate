@@ -75,7 +75,7 @@ class Validator
             $empty = $value === null || $value === '';
             foreach ($rules as $rule) {
                 $error = (!$empty || $rule instanceof Rule\Blank) ?
-                    $rule->apply($value) : null;
+                    $rule->apply($value, $values) : null;
                 if ($error) {
                     $errors[$field] = $error;
                     break;

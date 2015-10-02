@@ -4,12 +4,12 @@
     "description": "A shrimp of a validation library",
     "keywords": ["validate", "validation", "livr"],
     "version": "0.2.0-dev",
-    "homepage": "http://github.com/libreworks/caridea-bind",
+    "homepage": "http://github.com/libreworks/caridea-validate",
     "license": "Apache-2.0",
     "authors": [
         {
             "name": "Caridea Contributors",
-            "homepage": "https://github.com/libreworks/caridea-bind/contributors"
+            "homepage": "https://github.com/libreworks/caridea-validate/contributors"
         }
     ],
     "require": {

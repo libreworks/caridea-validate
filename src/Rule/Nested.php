@@ -89,10 +89,11 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * Validates the provided value.
      *
      * @param mixed $value A value to validate against the rule
+     * @param array|object $data The dataset which contains this field
      * @return array|string An array of error codes, a single error code, or
      *     null if validation succeeded
      */
-    public function apply($value)
+    public function apply($value, $data = [])
     {
         if (!($this->validator instanceof \Caridea\Validate\Validator)) {
             throw new \BadMethodCallException("This rule is a Draft. Try calling the 'finish' method to get the full Rule.");

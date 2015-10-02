@@ -214,4 +214,22 @@ class CompareTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('NOT_POSITIVE_DECIMAL', $object->apply($v), "'$v' passed");
         }
     }
+
+    /**
+     * @covers Caridea\Validate\Rule\Compare::decimal
+     * @covers Caridea\Validate\Rule\Compare::__construct
+     * @covers Caridea\Validate\Rule\Compare::apply
+     */
+    public function testEqualToField()
+    {
+        $object = Compare::equalToField('password');
+        
+        $pw = 'correct horse battery staple';
+        $data = ['password' => $pw];
+        $this->assertNull($object->apply($pw, $data));
+        $error = [1, 'nope', -123, '', null, false];
+        foreach ($error as $v) {
+            $this->assertEquals('FIELDS_NOT_EQUAL', $object->apply($v, $data));
+        }
+    }
 }
