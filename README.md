@@ -41,6 +41,8 @@ For the most part, we support all rules and their return codes as defined by the
 
 We have not implemented aliases (yet?).
 
+We did add an extra validator: `timezone`! It gives the error `WRONG_TIMEZONE` if the string provided isn't a valid timezone identifier.
+
 ## Examples
 
 Just a few quick examples (coming soon).

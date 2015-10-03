@@ -55,6 +55,7 @@ class Builder
         'email'            => ['Caridea\Validate\Rule\Match', 'email'],
         'iso_date'         => ['Caridea\Validate\Rule\Match', 'isoDate'],
         'url'              => ['Caridea\Validate\Rule\Match', 'url'],
+        'timezone'         => ['Caridea\Validate\Rule\Timezone', 'timezone'],
         'equal_to_field'   => ['Caridea\Validate\Rule\Compare', 'equalToField'],
         'nested_object'    => ['Caridea\Validate\Rule\Nested', 'nestedObject'],
         'list_of'          => ['Caridea\Validate\Rule\Nested', 'listOf'],
