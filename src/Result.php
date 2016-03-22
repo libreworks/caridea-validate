@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015 LibreWorks contributors
+ * @copyright 2015-2016 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
 namespace Caridea\Validate;
@@ -22,13 +22,13 @@ namespace Caridea\Validate;
 /**
  * A validation result.
  *
- * @copyright 2015 LibreWorks contributors
+ * @copyright 2015-2016 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
 class Result
 {
     /**
-     * @var boolean Whether the validation passed
+     * @var bool Whether the validation passed
      */
     private $passed;
     /**
@@ -50,7 +50,7 @@ class Result
     /**
      * Whether the validation passed.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasErrors()
     {
