@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -52,7 +53,7 @@ class Validator
      * @param string $field The field to access
      * @return mixed The accessed value
      */
-    protected function access($values, $field)
+    protected function access($values, string $field)
     {
         return isset($values[$field]) ? $values[$field] : null;
     }
@@ -76,7 +77,10 @@ class Validator
             foreach ($rules as $rule) {
                 $error = (!$empty || $rule instanceof Rule\Blank) ?
                     $rule->apply($value, $values) : null;
-                if ($error) {
+                if (is_array($error) && count($error) > 0) {
+                    $errors[$field] = count($error) > 1 ? $error : current($error);
+                    break;
+                } elseif ($error !== null) {
                     $errors[$field] = $error;
                     break;
                 }
@@ -92,7 +96,7 @@ class Validator
      * @return \Caridea\Validate\Result The validation results
      * @throws \InvalidArgumentException if `$values` is null
      */
-    public function validate($values)
+    public function validate($values): Result
     {
         return new Result($this->iterate($values));
     }

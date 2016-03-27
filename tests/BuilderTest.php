@@ -82,10 +82,11 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     
     public function bar()
     {
+        $rule = $this->getMockForAbstractClass(Rule::class);
         $draft = $this->getMockForAbstractClass(Draft::class);
         $draft->expects($this->once())
             ->method('finish')
-            ->willReturn(null);
+            ->willReturn($rule);
         return $draft;
     }
 }

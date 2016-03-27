@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -43,8 +44,8 @@ class TimezoneTest extends \PHPUnit_Framework_TestCase
      */
     public function testApply()
     {
-        $this->assertEquals('FORMAT_ERROR', $this->object->apply([]));
+        $this->assertEquals(['FORMAT_ERROR'], $this->object->apply([]));
         $this->assertNull($this->object->apply('America/New_York'));
-        $this->assertEquals('WRONG_TIMEZONE', $this->object->apply('foobar'));
+        $this->assertEquals(['WRONG_TIMEZONE'], $this->object->apply('foobar'));
     }
 }

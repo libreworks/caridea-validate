@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -45,15 +46,14 @@ class Timezone implements \Caridea\Validate\Rule
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array|string An array of error codes, a single error code, or
-     *     null if validation succeeded
+     * @return array An array of error codes or null if validation succeeded
      */
     public function apply($value, $data = [])
     {
         if (!is_string($value)) {
-            return 'FORMAT_ERROR';
+            return ['FORMAT_ERROR'];
         }
-        return in_array($value, $this->zones, true) ? null : 'WRONG_TIMEZONE';
+        return in_array($value, $this->zones, true) ? null : ['WRONG_TIMEZONE'];
     }
 
     /**
@@ -61,7 +61,7 @@ class Timezone implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Timezone the created rule
      */
-    public static function timezone()
+    public static function timezone(): Timezone
     {
         return new Timezone();
     }

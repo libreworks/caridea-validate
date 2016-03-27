@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -42,7 +43,7 @@ class SwitchValidator extends Validator
      * @param string Field name to inspect
      * @param array $validators Associative array of field value to validator
      */
-    public function __construct($field, array $validators)
+    public function __construct(string $field, array $validators)
     {
         parent::__construct([]);
         $this->field = $field;
@@ -56,7 +57,7 @@ class SwitchValidator extends Validator
      * @return array Associative array of field name to error
      * @throws \InvalidArgumentException if `$values` is null or matching validator
      */
-    protected function iterate($values)
+    protected function iterate($values): array
     {
         if (!is_object($values) && !is_array($values)) {
             throw new \InvalidArgumentException("Unable to validate provided object");

@@ -32,8 +32,7 @@ interface Rule
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array|string An array of error codes, a single error code, or
-     *     null if validation succeeded
+     * @return array An array of error codes or null if validation succeeded
      */
     public function apply($value, $data = []);
 }

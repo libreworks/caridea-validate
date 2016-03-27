@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -65,26 +66,25 @@ class Match implements \Caridea\Validate\Rule
      * @param string $pattern The pattern to match
      * @param string $error The failure error code
      */
-    public function __construct($pattern, $error = null)
+    public function __construct(string $pattern, string $error = null)
     {
         $this->pattern = (string) $pattern;
-        $this->error = strlen(trim($error)) > 0 ? (string) $error : 'WRONG_FORMAT';
+        $this->error = strlen(trim((string)$error)) > 0 ? (string) $error : 'WRONG_FORMAT';
     }
-    
+
     /**
      * Validates the provided value.
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array|string An array of error codes, a single error code, or
-     *     null if validation succeeded
+     * @return array An array of error codes or null if validation succeeded
      */
     public function apply($value, $data = [])
     {
         if (!is_scalar($value)) {
-            return 'FORMAT_ERROR';
+            return ['FORMAT_ERROR'];
         }
-        return preg_match($this->pattern, $value) ? null : $this->error;
+        return preg_match($this->pattern, $value) ? null : [$this->error];
     }
     
     /**
@@ -98,7 +98,7 @@ class Match implements \Caridea\Validate\Rule
      * @param string $flags Any PCRE regex flags (e.g. i, s)
      * @return \Caridea\Validate\Rule\Match the created rule
      */
-    public static function like($pattern, $flags = '')
+    public static function like(string $pattern, string $flags = ''): Match
     {
         return new Match("/$pattern/$flags", 'WRONG_FORMAT');
     }
@@ -108,7 +108,7 @@ class Match implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Match the created rule
      */
-    public static function url()
+    public static function url(): Match
     {
         return new Match(self::URL, 'WRONG_URL');
     }
@@ -118,7 +118,7 @@ class Match implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Match the created rule
      */
-    public static function email()
+    public static function email(): Match
     {
         return new Match(self::EMAIL, 'WRONG_EMAIL');
     }
@@ -128,7 +128,7 @@ class Match implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Match the created rule
      */
-    public static function isoDate()
+    public static function isoDate(): Match
     {
         return new Match(self::DATE, 'WRONG_DATE');
     }

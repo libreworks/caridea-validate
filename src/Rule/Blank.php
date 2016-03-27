@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -37,7 +38,7 @@ class Blank implements \Caridea\Validate\Rule
      *
      * @param string $operator The operator type
      */
-    protected function __construct($operator)
+    protected function __construct(string $operator)
     {
         $this->operator = $operator;
     }
@@ -47,23 +48,22 @@ class Blank implements \Caridea\Validate\Rule
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array|string An array of error codes, a single error code, or
-     *     null if validation succeeded
+     * @return array An array of error codes or null if validation succeeded
      */
     public function apply($value, $data = [])
     {
         switch ($this->operator) {
             case "required":
-                return $value === null || $value === '' ? 'REQUIRED' : null;
+                return $value === null || $value === '' ? ['REQUIRED'] : null;
             case "empty":
-                return $value === '' ? 'CANNOT_BE_EMPTY' : null;
+                return $value === '' ? ['CANNOT_BE_EMPTY'] : null;
             case "list":
                 if (empty($value)) {
-                    return 'CANNOT_BE_EMPTY';
+                    return ['CANNOT_BE_EMPTY'];
                 } elseif (!is_array($value) && !($value instanceof \Countable)) {
-                    return 'FORMAT_ERROR';
+                    return ['FORMAT_ERROR'];
                 }
-                return count($value) === 0 ? 'CANNOT_BE_EMPTY' : null;
+                return count($value) === 0 ? ['CANNOT_BE_EMPTY'] : null;
         }
     }
     
@@ -72,7 +72,7 @@ class Blank implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Blank the created rule
      */
-    public static function required()
+    public static function required(): Blank
     {
         return new Blank('required');
     }
@@ -82,7 +82,7 @@ class Blank implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Blank
      */
-    public static function notEmpty()
+    public static function notEmpty(): Blank
     {
         return new Blank('empty');
     }
@@ -92,7 +92,7 @@ class Blank implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Blank
      */
-    public static function notEmptyList()
+    public static function notEmptyList(): Blank
     {
         return new Blank('list');
     }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -35,7 +36,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object, 1, false, 0.4];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = ['aoeu', '123', '', ' ', 'h', '私', 'おはよう'];
         foreach ($null as $v) {
@@ -43,7 +44,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         }
         $error = ['12345', '努力と根性'];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_LONG', $object->apply($v));
+            $this->assertEquals(['TOO_LONG'], $object->apply($v));
         }
     }
 
@@ -58,7 +59,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object, 1, false, 0.4];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = ['12345', '努力と根性', 'excellent'];
         foreach ($null as $v) {
@@ -66,7 +67,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         }
         $error = ['aoeu', '123', '', ' ', 'h', '私', 'おはよう'];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_SHORT', $object->apply($v));
+            $this->assertEquals(['TOO_SHORT'], $object->apply($v));
         }
     }
 
@@ -81,7 +82,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object, 1, false, 0.4];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = ['12345', '努力と根性'];
         foreach ($null as $v) {
@@ -89,11 +90,11 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         }
         $error = ['aoeu', '123', '', ' ', 'h', '私', 'おはよう'];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_SHORT', $object->apply($v));
+            $this->assertEquals(['TOO_SHORT'], $object->apply($v));
         }
         $error = ['excellent', 'way too long'];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_LONG', $object->apply($v));
+            $this->assertEquals(['TOO_LONG'], $object->apply($v));
         }
     }
 
@@ -108,7 +109,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object, 1, false, 0.4];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = ['hi', '123', 'aoeu', '12345', 'おはよう', '努力と根性'];
         foreach ($null as $v) {
@@ -116,11 +117,11 @@ class LengthTest extends \PHPUnit_Framework_TestCase
         }
         $error = ['', ' ', 'h', '私'];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_SHORT', $object->apply($v));
+            $this->assertEquals(['TOO_SHORT'], $object->apply($v));
         }
         $error = ['excellent', 'way too long'];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_LONG', $object->apply($v));
+            $this->assertEquals(['TOO_LONG'], $object->apply($v));
         }
     }
 }

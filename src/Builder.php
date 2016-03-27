@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -86,7 +87,7 @@ class Builder
      * @param array $definitions Associative array of definition name to function callback
      * @return $this provides a fluent interface
      */
-    public function register(array $definitions)
+    public function register(array $definitions): self
     {
         foreach ($definitions as $name => $callback) {
             $this->definitions[$name] = $callback;
@@ -114,10 +115,10 @@ class Builder
      * Currently, this function only supports JSON hashes as PHP objects, not
      * PHP associative arrays.
      *
-     * @param object $ruleset Object (as returned from `json_decode`) with ruleset
+     * @param \stdClass $ruleset Object (as returned from `json_decode`) with ruleset
      * @return \Caridea\Validate\Validator the built validator
      */
-    public function build($ruleset)
+    public function build(\stdClass $ruleset): Validator
     {
         $validators = [];
         foreach ($ruleset as $field => $rules) {
@@ -143,7 +144,7 @@ class Builder
      * @param mixed $arg Optional constructor argument, or an arary of arguments
      * @return array An array of instantiated rules
      */
-    protected function getRule($rule, $arg = null)
+    protected function getRule($rule, $arg = null): array
     {
         $rules = [];
         if (is_string($rule)) {

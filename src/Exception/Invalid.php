@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -48,7 +49,7 @@ class Invalid extends \UnexpectedValueException implements \Caridea\Validate\Exc
      *
      * @return array Associative array of field name to error
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }

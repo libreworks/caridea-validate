@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -42,7 +43,7 @@ class Compare implements \Caridea\Validate\Rule
      * @param string $operator The operator type
      * @param mixed $operand Optional comparison value
      */
-    protected function __construct($operator, $operand = null)
+    protected function __construct(string $operator, $operand = null)
     {
         $this->operator = $operator;
         $this->operand = $operand;
@@ -53,48 +54,47 @@ class Compare implements \Caridea\Validate\Rule
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array|string An array of error codes, a single error code, or
-     *     null if validation succeeded
+     * @return array An array of error codes or null if validation succeeded
      */
     public function apply($value, $data = [])
     {
         if ("eqf" === $this->operator) {
             return $value === $this->access($data, $this->operand) ?
-                null : 'FIELDS_NOT_EQUAL';
+                null : ['FIELDS_NOT_EQUAL'];
         }
         if (!is_scalar($value)) {
-            return 'FORMAT_ERROR';
+            return ['FORMAT_ERROR'];
         }
         switch ($this->operator) {
             case "in":
-                return in_array($value, $this->operand, true) ? null : 'NOT_ALLOWED_VALUE';
+                return in_array($value, $this->operand, true) ? null : ['NOT_ALLOWED_VALUE'];
             case "lt":
-                return $value > $this->operand ? 'TOO_HIGH' : null;
+                return $value > $this->operand ? ['TOO_HIGH'] : null;
             case "gt":
-                return $value < $this->operand ? 'TOO_LOW' : null;
+                return $value < $this->operand ? ['TOO_LOW'] : null;
             case "bt":
                 if ($value > $this->operand[1]) {
-                    return 'TOO_HIGH';
+                    return ['TOO_HIGH'];
                 } elseif ($value < $this->operand[0]) {
-                    return 'TOO_LOW';
+                    return ['TOO_LOW'];
                 }
                 return null;
             case "int":
-                return is_int($value) || ctype_digit(ltrim($value, '-+')) ?
-                    null : 'NOT_INTEGER';
+                return is_int($value) || ctype_digit(ltrim((string)$value, '-+')) ?
+                    null : ['NOT_INTEGER'];
             case "+int":
-                return (is_int($value) || ctype_digit(ltrim($value, '-+'))) &&
-                    ((int) $value) > 0 ? null : 'NOT_POSITIVE_INTEGER';
+                return (is_int($value) || ctype_digit(ltrim((string)$value, '-+'))) &&
+                    ((int) $value) > 0 ? null : ['NOT_POSITIVE_INTEGER'];
             case "float":
                 return is_float($value) || ($value === (string)(float)$value) ?
-                    null : 'NOT_DECIMAL';
+                    null : ['NOT_DECIMAL'];
             case "+float":
                 if (is_float($value)) {
-                    return $value <= 0 ? 'NOT_POSITIVE_DECIMAL' : null;
+                    return $value <= 0 ? ['NOT_POSITIVE_DECIMAL'] : null;
                 } elseif ($value === (string)(float)$value) {
-                    return ((float) $value) <= 0 ? 'NOT_POSITIVE_DECIMAL' : null;
+                    return ((float) $value) <= 0 ? ['NOT_POSITIVE_DECIMAL'] : null;
                 }
-                return 'NOT_POSITIVE_DECIMAL';
+                return ['NOT_POSITIVE_DECIMAL'];
         }
     }
     
@@ -108,7 +108,7 @@ class Compare implements \Caridea\Validate\Rule
      * @param string $field The field to access
      * @return mixed The accessed value
      */
-    protected function access($values, $field)
+    protected function access($values, string $field)
     {
         return isset($values[$field]) ? $values[$field] : null;
     }
@@ -119,7 +119,7 @@ class Compare implements \Caridea\Validate\Rule
      * @param array $values The accepted values
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function oneOf(array $values)
+    public static function oneOf(array $values): Compare
     {
         return new Compare('in', $values);
     }
@@ -130,7 +130,7 @@ class Compare implements \Caridea\Validate\Rule
      * @param int|float $value The maximum value
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function max($value)
+    public static function max($value): Compare
     {
         return new Compare('lt', $value);
     }
@@ -141,7 +141,7 @@ class Compare implements \Caridea\Validate\Rule
      * @param int|float $value The minimum value
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function min($value)
+    public static function min($value): Compare
     {
         return new Compare('gt', $value);
     }
@@ -153,7 +153,7 @@ class Compare implements \Caridea\Validate\Rule
      * @param int|float $max The maximum value, inclusive
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function between($min, $max)
+    public static function between($min, $max): Compare
     {
         $value = $min > $max ? [$max, $min] : [$min, $max];
         return new Compare('bt', $value);
@@ -164,7 +164,7 @@ class Compare implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function integer()
+    public static function integer(): Compare
     {
         return new Compare('int');
     }
@@ -174,7 +174,7 @@ class Compare implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function positiveInteger()
+    public static function positiveInteger(): Compare
     {
         return new Compare('+int');
     }
@@ -184,7 +184,7 @@ class Compare implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function decimal()
+    public static function decimal(): Compare
     {
         return new Compare('float');
     }
@@ -194,7 +194,7 @@ class Compare implements \Caridea\Validate\Rule
      *
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function positiveDecimal()
+    public static function positiveDecimal(): Compare
     {
         return new Compare('+float');
     }
@@ -205,7 +205,7 @@ class Compare implements \Caridea\Validate\Rule
      * @param string $field The other field whose value will be compared
      * @return \Caridea\Validate\Rule\Compare the created rule
      */
-    public static function equalToField($field)
+    public static function equalToField(string $field): Compare
     {
         return new Compare('eqf', $field);
     }

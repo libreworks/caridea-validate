@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -33,5 +34,5 @@ interface Draft
      * @param \Caridea\Validate\Builder $builder
      * @return \Caridea\Validate\Rule The fully created rule
      */
-    public function finish(Builder $builder);
+    public function finish(Builder $builder): Rule;
 }

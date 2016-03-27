@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -52,7 +53,7 @@ class Result
      *
      * @return bool
      */
-    public function hasErrors()
+    public function hasErrors(): bool
     {
         return !$this->passed;
     }
@@ -69,7 +70,7 @@ class Result
      *
      * @return array Associative array of field name to error
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
@@ -79,7 +80,7 @@ class Result
      *
      * @return string The errors as a JSON string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return json_encode($this->errors);
     }

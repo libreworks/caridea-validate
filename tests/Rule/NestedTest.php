@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -31,7 +32,7 @@ class NestedTest extends \PHPUnit_Framework_TestCase
      */
     public function testDraft()
     {
-        $object = Nested::nestedObject(['name' => 'required']);
+        $object = Nested::nestedObject((object)['name' => 'required']);
         $object->apply(null);
     }
     
@@ -41,9 +42,9 @@ class NestedTest extends \PHPUnit_Framework_TestCase
     public function testArgument()
     {
         $builder = new \Caridea\Validate\Builder();
-        $object = Nested::nestedObject(['name' => 'required']);
+        $object = Nested::nestedObject((object)['name' => 'required']);
         $rule = $object->finish($builder);
-        $this->assertEquals('FORMAT_ERROR', $rule->apply(123));
+        $this->assertEquals(['FORMAT_ERROR'], $rule->apply(123));
     }
     
     /**
@@ -55,7 +56,7 @@ class NestedTest extends \PHPUnit_Framework_TestCase
     public function testNestedObject()
     {
         $builder = new \Caridea\Validate\Builder();
-        $object = Nested::nestedObject(['name' => 'required']);
+        $object = Nested::nestedObject((object)['name' => 'required']);
         $rule = $object->finish($builder);
         $this->assertNull($rule->apply(['name' => 'hey']));
         $this->assertEquals(['name' => 'REQUIRED'], $rule->apply([]));

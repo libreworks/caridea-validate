@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -35,7 +36,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = [1, 2, 'ok', 'yup'];
         foreach ($null as $v) {
@@ -43,7 +44,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = [0, false, 'bad', 1.1];
         foreach ($error as $v) {
-            $this->assertEquals('NOT_ALLOWED_VALUE', $object->apply($v));
+            $this->assertEquals(['NOT_ALLOWED_VALUE'], $object->apply($v));
         }
     }
 
@@ -58,7 +59,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = [25, 0, -1, "42", "49.99", 50, 'no'];
         foreach ($null as $v) {
@@ -66,7 +67,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = [100, '51', 50.1];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_HIGH', $object->apply($v));
+            $this->assertEquals(['TOO_HIGH'], $object->apply($v));
         }
     }
 
@@ -81,7 +82,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = [100, '51', 50.1, 50];
         foreach ($null as $v) {
@@ -89,7 +90,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = [25, 0, -1, "42", "49.99", "no"];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_LOW', $object->apply($v));
+            $this->assertEquals(['TOO_LOW'], $object->apply($v));
         }
     }
 
@@ -104,7 +105,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = [15, 10, 20, '12', 17.98];
         foreach ($null as $v) {
@@ -112,11 +113,11 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = ['nope', 9, '9.99', 0, -1];
         foreach ($error as $v) {
-            $this->assertEquals('TOO_LOW', $object->apply($v));
+            $this->assertEquals(['TOO_LOW'], $object->apply($v));
         }
         $error2 = [21, '42', 20.001];
         foreach ($error2 as $v) {
-            $this->assertEquals('TOO_HIGH', $object->apply($v));
+            $this->assertEquals(['TOO_HIGH'], $object->apply($v));
         }
     }
 
@@ -131,7 +132,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = ['1', 0, -1, 12345, PHP_INT_MAX, '+123'];
         foreach ($null as $v) {
@@ -139,7 +140,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = [1.1, '123.4', 'no', false, '123.no', '+123+', PHP_INT_MAX + 1];
         foreach ($error as $v) {
-            $this->assertEquals('NOT_INTEGER', $object->apply($v));
+            $this->assertEquals(['NOT_INTEGER'], $object->apply($v));
         }
 
     }
@@ -155,7 +156,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = ['123', 1, PHP_INT_MAX, 42];
         foreach ($null as $v) {
@@ -163,7 +164,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = [123.234, 0, -1, "", 'no', false, PHP_INT_MAX + 1];
         foreach ($error as $v) {
-            $this->assertEquals('NOT_POSITIVE_INTEGER', $object->apply($v));
+            $this->assertEquals(['NOT_POSITIVE_INTEGER'], $object->apply($v));
         }
 
     }
@@ -179,7 +180,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = [123.234, PHP_INT_MAX + 1, -123.456, 0.0, "98.123123"];
         foreach ($null as $v) {
@@ -187,7 +188,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = [1, 'nope', -123, '', false];
         foreach ($error as $v) {
-            $this->assertEquals('NOT_DECIMAL', $object->apply($v));
+            $this->assertEquals(['NOT_DECIMAL'], $object->apply($v));
         }
 
     }
@@ -203,7 +204,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         
         $format = [[], $object];
         foreach ($format as $v) {
-            $this->assertEquals('FORMAT_ERROR', $object->apply($v));
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
         }
         $null = [123.234, PHP_INT_MAX + 1, 0.01, "123.123123"];
         foreach ($null as $v) {
@@ -211,7 +212,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         }
         $error = [1, 'nope', -123, -123.456, false, ''];
         foreach ($error as $v) {
-            $this->assertEquals('NOT_POSITIVE_DECIMAL', $object->apply($v), "'$v' passed");
+            $this->assertEquals(['NOT_POSITIVE_DECIMAL'], $object->apply($v), "'$v' passed");
         }
     }
 
@@ -229,7 +230,7 @@ class CompareTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($object->apply($pw, $data));
         $error = [1, 'nope', -123, '', null, false];
         foreach ($error as $v) {
-            $this->assertEquals('FIELDS_NOT_EQUAL', $object->apply($v, $data));
+            $this->assertEquals(['FIELDS_NOT_EQUAL'], $object->apply($v, $data));
         }
     }
 }

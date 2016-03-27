@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -31,13 +32,13 @@ class MatchTest extends \PHPUnit_Framework_TestCase
     public function testApply()
     {
         $object = new Match("/^[a-z]+$/", 'YOU_LOSE');
-        $this->assertEquals('FORMAT_ERROR', $object->apply([]));
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply([]));
         $this->assertNull($object->apply('hello'));
-        $this->assertEquals('YOU_LOSE', $object->apply('hello!'));
+        $this->assertEquals(['YOU_LOSE'], $object->apply('hello!'));
         
         $object = new Match("/^[a-z]+$/");
         $this->assertNull($object->apply('hello'));
-        $this->assertEquals('WRONG_FORMAT', $object->apply('hello!'));
+        $this->assertEquals(['WRONG_FORMAT'], $object->apply('hello!'));
     }
 
     /**
@@ -46,9 +47,9 @@ class MatchTest extends \PHPUnit_Framework_TestCase
     public function testLike()
     {
         $object = Match::like("^[a-z0-9]+$", 'i');
-        $this->assertEquals('FORMAT_ERROR', $object->apply([]));
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply([]));
         $this->assertNull($object->apply('Hello1'));
-        $this->assertEquals('WRONG_FORMAT', $object->apply('Hello1!'));
+        $this->assertEquals(['WRONG_FORMAT'], $object->apply('Hello1!'));
     }
 
     /**
@@ -57,13 +58,13 @@ class MatchTest extends \PHPUnit_Framework_TestCase
     public function testUrl()
     {
         $object = Match::url();
-        $this->assertEquals('FORMAT_ERROR', $object->apply([]));
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply([]));
         $this->assertNull($object->apply('http://example.com/?aoeu.htns#1234'));
         $this->assertNull($object->apply('https://example.com/hello/file.ext?aoeu=123&htns=456'));
         $this->assertNull($object->apply('https://example.com/hello/file.ext'));
         $this->assertNull($object->apply('https://example.com/hello/'));
         $this->assertNull($object->apply('http://123.123.123.123'));
-        $this->assertEquals('WRONG_URL', $object->apply('Hello1!'));
+        $this->assertEquals(['WRONG_URL'], $object->apply('Hello1!'));
     }
 
     /**
@@ -72,13 +73,13 @@ class MatchTest extends \PHPUnit_Framework_TestCase
     public function testEmail()
     {
         $object = Match::email();
-        $this->assertEquals('FORMAT_ERROR', $object->apply([]));
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply([]));
         $this->assertNull($object->apply('user@example.com'));
         $this->assertNull($object->apply('user.foo@127.0.0.1'));
         $this->assertNull($object->apply('user.foo@example'));
         $this->assertNull($object->apply('user.foo@example.com'));
         $this->assertNull($object->apply('user+foo@example.com'));
-        $this->assertEquals('WRONG_EMAIL', $object->apply('user@example com'));
+        $this->assertEquals(['WRONG_EMAIL'], $object->apply('user@example com'));
     }
 
     /**
@@ -87,15 +88,15 @@ class MatchTest extends \PHPUnit_Framework_TestCase
     public function testIsoDate()
     {
         $object = Match::isoDate();
-        $this->assertEquals('FORMAT_ERROR', $object->apply([]));
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply([]));
         $this->assertNull($object->apply('2014-01-01'));
         $this->assertNull($object->apply('2014-12-31'));
         $this->assertNull($object->apply('2014-10-20'));
-        $this->assertEquals('WRONG_DATE', $object->apply('no'));
-        $this->assertEquals('WRONG_DATE', $object->apply('123-34-12'));
-        $this->assertEquals('WRONG_DATE', $object->apply('1997-24-12'));
-        $this->assertEquals('WRONG_DATE', $object->apply('2009-12-41'));
-        $this->assertEquals('WRONG_DATE', $object->apply('2009-12-00'));
-        $this->assertEquals('WRONG_DATE', $object->apply('2009-12-32'));
+        $this->assertEquals(['WRONG_DATE'], $object->apply('no'));
+        $this->assertEquals(['WRONG_DATE'], $object->apply('123-34-12'));
+        $this->assertEquals(['WRONG_DATE'], $object->apply('1997-24-12'));
+        $this->assertEquals(['WRONG_DATE'], $object->apply('2009-12-41'));
+        $this->assertEquals(['WRONG_DATE'], $object->apply('2009-12-00'));
+        $this->assertEquals(['WRONG_DATE'], $object->apply('2009-12-32'));
     }
 }

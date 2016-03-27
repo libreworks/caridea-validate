@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -47,7 +48,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * @param mixed|\Caridea\Validate\Validator The validator to use, or definitions to create one
      * @param string $field Optional field on object that chooses rules
      */
-    protected function __construct($operator, $validator, $field = null)
+    protected function __construct(string $operator, $validator, string $field = null)
     {
         $this->operator = $operator;
         $this->validator = $validator;
@@ -60,7 +61,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * @param \Caridea\Validate\Builder $builder
      * @return \Caridea\Validate\Rule The fully created rule
      */
-    public function finish(\Caridea\Validate\Builder $builder)
+    public function finish(\Caridea\Validate\Builder $builder): \Caridea\Validate\Rule
     {
         if ($this->validator instanceof \Caridea\Validate\Validator) {
             return $this;
@@ -90,8 +91,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array|string An array of error codes, a single error code, or
-     *     null if validation succeeded
+     * @return array An array of error codes or null if validation succeeded
      */
     public function apply($value, $data = [])
     {
@@ -99,7 +99,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
             throw new \BadMethodCallException("This rule is a Draft. Try calling the 'finish' method to get the full Rule.");
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
-            return 'FORMAT_ERROR';
+            return ['FORMAT_ERROR'];
         }
         switch ($this->operator) {
             case "nested_object":
@@ -135,7 +135,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * @param object $ruleset The validation ruleset
      * @return \Caridea\Validate\Rule\Nested the created rule
      */
-    public static function nestedObject($ruleset)
+    public static function nestedObject(\stdClass $ruleset): Nested
     {
         return new Nested("nested_object", $ruleset);
     }
@@ -146,7 +146,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * @param mixed $rules The rule or rules to enforce
      * @return \Caridea\Validate\Rule\Nested the created rule
      */
-    public static function listOf($rules)
+    public static function listOf($rules): Nested
     {
         return new Nested("list", $rules);
     }
@@ -157,7 +157,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * @param object $ruleset The validation ruleset
      * @return \Caridea\Validate\Rule\Nested the created rule
      */
-    public static function listOfObjects($ruleset)
+    public static function listOfObjects(\stdClass $ruleset): Nested
     {
         return new Nested("list_objects", $ruleset);
     }
@@ -169,7 +169,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * @param object $rulesets The rulesets
      * @return \Caridea\Validate\Rule\Nested the created rule
      */
-    public static function listOfDifferentObjects($field, $rulesets)
+    public static function listOfDifferentObjects(string $field, \stdClass $rulesets): Nested
     {
         return new Nested('list_different_objects', $rulesets, $field);
     }

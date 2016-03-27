@@ -35,8 +35,8 @@ class BlankTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($object->apply('hi'));
         $this->assertNull($object->apply(false));
         $this->assertNull($object->apply('    '));
-        $this->assertEquals('REQUIRED', $object->apply(''));
-        $this->assertEquals('REQUIRED', $object->apply(null));
+        $this->assertEquals(['REQUIRED'], $object->apply(''));
+        $this->assertEquals(['REQUIRED'], $object->apply(null));
     }
 
     /**
@@ -52,7 +52,7 @@ class BlankTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($object->apply('    '));
         $this->assertNull($object->apply(null));
         $this->assertNull($object->apply([]));
-        $this->assertEquals('CANNOT_BE_EMPTY', $object->apply(''));
+        $this->assertEquals(['CANNOT_BE_EMPTY'], $object->apply(''));
     }
 
     /**
@@ -65,12 +65,12 @@ class BlankTest extends \PHPUnit_Framework_TestCase
         $object = Blank::notEmptyList();
         $this->assertNull($object->apply([1]));
         $this->assertNull($object->apply(new \ArrayObject([1])));
-        $this->assertEquals('FORMAT_ERROR', $object->apply('hi'));
-        $this->assertEquals('FORMAT_ERROR', $object->apply($object));
-        $this->assertEquals('CANNOT_BE_EMPTY', $object->apply(null));
-        $this->assertEquals('CANNOT_BE_EMPTY', $object->apply(0));
-        $this->assertEquals('CANNOT_BE_EMPTY', $object->apply(false));
-        $this->assertEquals('CANNOT_BE_EMPTY', $object->apply([]));
-        $this->assertEquals('CANNOT_BE_EMPTY', $object->apply(''));
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply('hi'));
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply($object));
+        $this->assertEquals(['CANNOT_BE_EMPTY'], $object->apply(null));
+        $this->assertEquals(['CANNOT_BE_EMPTY'], $object->apply(0));
+        $this->assertEquals(['CANNOT_BE_EMPTY'], $object->apply(false));
+        $this->assertEquals(['CANNOT_BE_EMPTY'], $object->apply([]));
+        $this->assertEquals(['CANNOT_BE_EMPTY'], $object->apply(''));
     }
 }

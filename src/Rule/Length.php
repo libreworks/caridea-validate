@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Caridea
  *
@@ -47,7 +48,7 @@ class Length implements \Caridea\Validate\Rule
      * @param int|int[] $length The length comparison
      * @param string $encoding The encoding to pass to `mb_strlen`
      */
-    protected function __construct($operator, $length, $encoding = 'UTF-8')
+    protected function __construct(string $operator, $length, string $encoding = 'UTF-8')
     {
         $this->operator = $operator;
         $this->length = $length;
@@ -59,32 +60,31 @@ class Length implements \Caridea\Validate\Rule
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array|string An array of error codes, a single error code, or
-     *     null if validation succeeded
+     * @return array An array of error codes or null if validation succeeded
      */
     public function apply($value, $data = [])
     {
         if (!is_string($value)) {
-            return 'FORMAT_ERROR';
+            return ['FORMAT_ERROR'];
         }
         $length = mb_strlen($value, $this->encoding);
         switch ($this->operator) {
             case "lt":
-                return $length > $this->length ? 'TOO_LONG' : null;
+                return $length > $this->length ? ['TOO_LONG'] : null;
             case "gt":
-                return $length < $this->length ? 'TOO_SHORT' : null;
+                return $length < $this->length ? ['TOO_SHORT'] : null;
             case "eq":
                 if ($length > $this->length) {
-                    return 'TOO_LONG';
+                    return ['TOO_LONG'];
                 } elseif ($length < $this->length) {
-                    return 'TOO_SHORT';
+                    return ['TOO_SHORT'];
                 }
                 return null;
             case "bt":
                 if ($length > $this->length[1]) {
-                    return 'TOO_LONG';
+                    return ['TOO_LONG'];
                 } elseif ($length < $this->length[0]) {
-                    return 'TOO_SHORT';
+                    return ['TOO_SHORT'];
                 }
                 return null;
         }
@@ -97,9 +97,9 @@ class Length implements \Caridea\Validate\Rule
      * @param string $encoding The string encoding
      * @return \Caridea\Validate\Rule\Length the created rule
      */
-    public static function max($length, $encoding = 'UTF-8')
+    public static function max(int $length, string $encoding = 'UTF-8'): Length
     {
-        return new Length('lt', (int) $length, $encoding);
+        return new Length('lt', $length, $encoding);
     }
     
     /**
@@ -109,9 +109,9 @@ class Length implements \Caridea\Validate\Rule
      * @param string $encoding The string encoding
      * @return \Caridea\Validate\Rule\Length the created rule
      */
-    public static function min($length, $encoding = 'UTF-8')
+    public static function min(int $length, string $encoding = 'UTF-8'): Length
     {
-        return new Length('gt', (int) $length, $encoding);
+        return new Length('gt', $length, $encoding);
     }
     
     /**
@@ -121,9 +121,9 @@ class Length implements \Caridea\Validate\Rule
      * @param string $encoding The string encoding
      * @return \Caridea\Validate\Rule\Length the created rule
      */
-    public static function equal($length, $encoding = 'UTF-8')
+    public static function equal(int $length, string $encoding = 'UTF-8'): Length
     {
-        return new Length('eq', (int) $length, $encoding);
+        return new Length('eq', $length, $encoding);
     }
     
     /**
@@ -134,9 +134,9 @@ class Length implements \Caridea\Validate\Rule
      * @param string $encoding The string encoding
      * @return \Caridea\Validate\Rule\Length the created rule
      */
-    public static function between($min, $max, $encoding = 'UTF-8')
+    public static function between(int $min, int $max, string $encoding = 'UTF-8'): Length
     {
-        $length = [(int) $min, (int) $max];
+        $length = [$min, $max];
         sort($length);
         return new Length('bt', $length, $encoding);
     }
