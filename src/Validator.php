@@ -29,20 +29,20 @@ namespace Caridea\Validate;
 class Validator
 {
     /**
-     * @var array Associative array of field name to list of rules
+     * @var array<string,array<Rule>> Associative array of field name to list of rules
      */
     protected $ruleset;
-    
+
     /**
      * Creates a new validator.
      *
-     * @param array $ruleset Associative array of field name to list of rules
+     * @param array<string,array<Rule>> $ruleset Associative array of field name to list of rules
      */
     public function __construct(array $ruleset)
     {
         $this->ruleset = $ruleset;
     }
-    
+
     /**
      * Gets a field from the values.
      *
@@ -57,7 +57,7 @@ class Validator
     {
         return isset($values[$field]) ? $values[$field] : null;
     }
-    
+
     /**
      * Iterates over the ruleset and collects any error codes.
      *
@@ -88,7 +88,7 @@ class Validator
         }
         return $errors;
     }
-    
+
     /**
      * Validates the provided value, returning a result object.
      *
@@ -100,7 +100,7 @@ class Validator
     {
         return new Result($this->iterate($values));
     }
-    
+
     /**
      * Validates the provided value, throwing an exception upon failure.
      *

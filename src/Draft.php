@@ -26,7 +26,7 @@ namespace Caridea\Validate;
  * @copyright 2015-2016 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-interface Draft
+interface Draft extends Rule
 {
     /**
      * Finishes creating a rule using the parent builder.

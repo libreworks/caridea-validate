@@ -29,72 +29,56 @@ namespace Caridea\Validate;
 class Builder
 {
     /**
-     * @var array Associative array of definition name to function callback
+     * @var \Caridea\Validate\Registry
      */
-    private $definitions = [];
-    
+    private $registry;
     /**
-     * @var array Associative array of definition name to function callback
+     * @var array<string,array<Rule>>
      */
-    private static $defaultDefinitions = [
-        'required'         => ['Caridea\Validate\Rule\Blank', 'required'],
-        'not_empty'        => ['Caridea\Validate\Rule\Blank', 'notEmpty'],
-        'not_empty_list'   => ['Caridea\Validate\Rule\Blank', 'notEmptyList'],
-        'one_of'           => ['Caridea\Validate\Rule\Compare', 'oneOf'],
-        'min_length'       => ['Caridea\Validate\Rule\Length', 'min'],
-        'max_length'       => ['Caridea\Validate\Rule\Length', 'max'],
-        'length_equal'     => ['Caridea\Validate\Rule\Length', 'equal'],
-        'length_between'   => ['Caridea\Validate\Rule\Length', 'between'],
-        'like'             => ['Caridea\Validate\Rule\Match', 'like'],
-        'integer'          => ['Caridea\Validate\Rule\Compare', 'integer'],
-        'positive_integer' => ['Caridea\Validate\Rule\Compare', 'positiveInteger'],
-        'decimal'          => ['Caridea\Validate\Rule\Compare', 'decimal'],
-        'positive_decimal' => ['Caridea\Validate\Rule\Compare', 'positiveDecimal'],
-        'min_number'       => ['Caridea\Validate\Rule\Compare', 'min'],
-        'max_number'       => ['Caridea\Validate\Rule\Compare', 'max'],
-        'number_between'   => ['Caridea\Validate\Rule\Compare', 'between'],
-        'email'            => ['Caridea\Validate\Rule\Match', 'email'],
-        'iso_date'         => ['Caridea\Validate\Rule\Match', 'isoDate'],
-        'url'              => ['Caridea\Validate\Rule\Match', 'url'],
-        'timezone'         => ['Caridea\Validate\Rule\Timezone', 'timezone'],
-        'equal_to_field'   => ['Caridea\Validate\Rule\Compare', 'equalToField'],
-        'nested_object'    => ['Caridea\Validate\Rule\Nested', 'nestedObject'],
-        'list_of'          => ['Caridea\Validate\Rule\Nested', 'listOf'],
-        'list_of_objects'  => ['Caridea\Validate\Rule\Nested', 'listOfObjects'],
-        'list_of_different_objects' => ['Caridea\Validate\Rule\Nested', 'listOfDifferentObjects'],
-    ];
-    
+    private $validators = [];
+
     /**
      * Creates a new Validation Builder.
-     */
-    public function __construct()
-    {
-        $this->register(self::$defaultDefinitions);
-    }
-    
-    /**
-     * Registers rule definitions.
      *
-     * ```php
-     * $builder = new \Caridea\Validate\Builder();
-     * $builder->register([
-     *     'adult' => ['My\Validate\AgeRule', 'adult'],
-     *     'credit_card' => function(){return new CreditCardRule();},
-     *     'something' => 'my_function_that_can_be_called'
-     * ]);
-     * ```
+     * @param \Caridea\Validate\Registry $registry The registry. This argument will be required in 3.0.
+     */
+    public function __construct(Registry $registry = null)
+    {
+        $this->registry = $registry ?? new Registry();
+    }
+
+    /**
+     * Registers rule definitions into the registry.
      *
      * @param array $definitions Associative array of definition name to function callback
      * @return $this provides a fluent interface
+     * @see \Caridea\Validate\Registry::register
+     * @deprecated 2.1.0:3.0.0 Use \Caridea\Validate\Registry::register instead
      */
     public function register(array $definitions): self
     {
-        foreach ($definitions as $name => $callback) {
-            $this->definitions[$name] = $callback;
-        }
+        $this->registry->register($definitions);
         return $this;
     }
-    
+
+    /**
+     * Adds one or more rules to this builder.
+     *
+     * @param string $field The field to validate
+     * @param string|object|array $rules Either a string name, an associative
+     *        array, or an object with name → arguments
+     * @return $this provides a fluent interface
+     */
+    public function field(string $field, ...$rules): self
+    {
+        $vrules = [];
+        foreach ($rules as $rule) {
+            $vrules = array_merge($vrules, $this->getRule($rule));
+        }
+        $this->validators[$field] = $vrules;
+        return $this;
+    }
+
     /**
      * Builds a validator for the provided ruleset.
      *
@@ -112,54 +96,51 @@ class Builder
      * $builder = new \Caridea\Validate\Builder();
      * $validator = $builder->build($ruleset);
      * ```
-     * Currently, this function only supports JSON hashes as PHP objects, not
-     * PHP associative arrays.
      *
-     * @param \stdClass $ruleset Object (as returned from `json_decode`) with ruleset
+     * @param object|array $ruleset Object or associative array (as returned
+     *        from `json_decode`) with ruleset, or `null` to use defined rules.
      * @return \Caridea\Validate\Validator the built validator
      */
-    public function build(\stdClass $ruleset): Validator
+    public function build($ruleset = null): Validator
     {
-        $validators = [];
-        foreach ($ruleset as $field => $rules) {
-            if (is_string($rules)) {
-                $validators[$field] = $this->getRule($rules);
-            } elseif (is_array($rules)) {
-                $setup = [];
-                foreach ($rules as $v) {
-                    $setup = array_merge($setup, $this->getRule($v));
+        $validators = array_merge([], $this->validators);
+        if (is_object($ruleset) || (is_array($ruleset) && count(array_filter(array_keys($ruleset), 'is_string')) > 0)) {
+            foreach ($ruleset as $field => $rules) {
+                $isArray = is_array($rules);
+                $isAssoc = $isArray &&
+                    count(array_filter(array_keys($rules), 'is_string')) > 0;
+                if (is_string($rules) || is_object($rules) || $isAssoc) {
+                    $validators[$field] = $this->getRule($rules);
+                } elseif ($isArray) {
+                    $setup = [];
+                    foreach ($rules as $v) {
+                        $setup = array_merge($setup, $this->getRule($v));
+                    }
+                    $validators[$field] = $setup;
                 }
-                $validators[$field] = $setup;
-            } elseif (is_object($rules)) {
-                $validators[$field] = $this->getRule($rules);
             }
         }
         return new Validator($validators);
     }
-    
+
     /**
-     * Parses a rule definition.
+     * Parses rule definitions.
      *
-     * @param string|object $rule Either a string name or an object with name → arguments
-     * @param mixed $arg Optional constructor argument, or an arary of arguments
-     * @return array An array of instantiated rules
+     * @param string|object|array $rule Either a string name, an associative
+     *        array, or an object with name → arguments
+     * @param mixed $arg Optional constructor argument, or an array of arguments
+     * @return array<Rule> An array of instantiated rules
      */
     protected function getRule($rule, $arg = null): array
     {
         $rules = [];
         if (is_string($rule)) {
-            if (isset($this->definitions[$rule])) {
-                $vrule = is_array($arg) ?
-                    call_user_func_array($this->definitions[$rule], $arg) :
-                    call_user_func($this->definitions[$rule], $arg);
-                if ($vrule instanceof Draft) {
-                    $vrule = $vrule->finish($this);
-                } elseif (!$vrule instanceof Rule) {
-                    throw new \UnexpectedValueException('Definitions must return Rule objects');
-                }
-                $rules[] = $vrule;
+            $vrule = $this->registry->factory($rule, $arg);
+            if ($vrule instanceof Draft) {
+                $vrule = $vrule->finish($this);
             }
-        } elseif (is_object($rule)) {
+            $rules[] = $vrule;
+        } elseif (is_object($rule) || is_array($rule)) {
             foreach ($rule as $name => $args) {
                 $rules = array_merge($rules, $this->getRule($name, $args));
             }

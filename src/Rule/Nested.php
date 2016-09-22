@@ -26,7 +26,7 @@ namespace Caridea\Validate\Rule;
  * @copyright 2015-2016 LibreWorks contributors
  * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
  */
-class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
+class Nested implements \Caridea\Validate\Draft
 {
     /**
      * @var string The operator type
@@ -40,7 +40,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
      * @var string Optional field on object that chooses rules.
      */
     private $field;
-    
+
     /**
      * Creates a new NestedRule.
      *
@@ -85,7 +85,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
             }
         }
     }
-    
+
     /**
      * Validates the provided value.
      *
@@ -128,7 +128,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
                 return array_filter($errors) ? $errors : null;
         }
     }
-    
+
     /**
      * Verifies an object value against separate validator rules.
      *
@@ -139,7 +139,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
     {
         return new Nested("nested_object", $ruleset);
     }
-    
+
     /**
      * Verifies each entry in a list using one or more rules.
      *
@@ -150,7 +150,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
     {
         return new Nested("list", $rules);
     }
-    
+
     /**
      * Verifies each entry in a list against separate validator rules.
      *
@@ -161,7 +161,7 @@ class Nested implements \Caridea\Validate\Rule, \Caridea\Validate\Draft
     {
         return new Nested("list_objects", $ruleset);
     }
-    
+
     /**
      * Verifies each entry in a list using one of several validators based on a field value.
      *

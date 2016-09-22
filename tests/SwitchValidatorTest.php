@@ -29,7 +29,7 @@ class SwitchValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testIterate()
     {
-        $val = $this->getMock(Validator::class, ['validate'], [], '', false);
+        $val = $this->getMockBuilder(Validator::class)->setMethods(['validate'])->disableOriginalConstructor()->getMock();
         $val->expects($this->once())
             ->method('validate')
             ->willReturn(new Result(['user' => 'ERROR']));
@@ -48,7 +48,7 @@ class SwitchValidatorTest extends \PHPUnit_Framework_TestCase
         $object = new SwitchValidator('foo', []);
         $object->validate(['foo' => 'bar']);
     }
-    
+
     /**
      * @covers Caridea\Validate\SwitchValidator
      * @expectedException \InvalidArgumentException
