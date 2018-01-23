@@ -14,16 +14,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 namespace Caridea\Validate;
 
 /**
  * Immutable validation rule logic.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 interface Rule
 {
@@ -32,7 +32,7 @@ interface Rule
      *
      * @param mixed $value A value to validate against the rule
      * @param array|object $data The dataset which contains this field
-     * @return array An array of error codes or null if validation succeeded
+     * @return array|null An array of error codes or null if validation succeeded
      */
-    public function apply($value, $data = []);
+    public function apply($value, $data = []): ?array;
 }

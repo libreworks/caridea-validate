@@ -15,16 +15,16 @@ declare(strict_types=1);
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 namespace Caridea\Validate\Rule;
 
 /**
  * Pattern matching rule.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 class Match implements \Caridea\Validate\Rule
 {
@@ -59,7 +59,7 @@ class Match implements \Caridea\Validate\Rule
      * @var string Regular Expression to match dates
      */
     const DATE = '/^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/';
-    
+
     /**
      * Creates a new MatchRule.
      *
@@ -73,20 +73,16 @@ class Match implements \Caridea\Validate\Rule
     }
 
     /**
-     * Validates the provided value.
-     *
-     * @param mixed $value A value to validate against the rule
-     * @param array|object $data The dataset which contains this field
-     * @return array An array of error codes or null if validation succeeded
+     * {@inheritDoc}
      */
-    public function apply($value, $data = [])
+    public function apply($value, $data = []): ?array
     {
         if (!is_scalar($value)) {
             return ['FORMAT_ERROR'];
         }
         return preg_match($this->pattern, $value) ? null : [$this->error];
     }
-    
+
     /**
      * Gets a regular expression matching rule.
      *
@@ -122,7 +118,7 @@ class Match implements \Caridea\Validate\Rule
     {
         return new Match(self::EMAIL, 'WRONG_EMAIL');
     }
-    
+
     /**
      * Gets a rule that matches ISO 8601 dates.
      *

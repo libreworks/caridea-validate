@@ -15,16 +15,16 @@ declare(strict_types=1);
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 namespace Caridea\Validate\Rule;
 
 /**
  * Compares string length to accepted boundaries.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 class Length implements \Caridea\Validate\Rule
 {
@@ -40,7 +40,7 @@ class Length implements \Caridea\Validate\Rule
      * @var string The encoding to pass to `mb_strlen`
      */
     private $encoding;
-    
+
     /**
      * Creates a new LengthRule.
      *
@@ -54,15 +54,11 @@ class Length implements \Caridea\Validate\Rule
         $this->length = $length;
         $this->encoding = $encoding;
     }
-    
+
     /**
-     * Validates the provided value.
-     *
-     * @param mixed $value A value to validate against the rule
-     * @param array|object $data The dataset which contains this field
-     * @return array An array of error codes or null if validation succeeded
+     * {@inheritDoc}
      */
-    public function apply($value, $data = [])
+    public function apply($value, $data = []): ?array
     {
         if (!is_string($value)) {
             return ['FORMAT_ERROR'];
@@ -89,7 +85,7 @@ class Length implements \Caridea\Validate\Rule
                 return null;
         }
     }
-    
+
     /**
      * Gets a rule that requires strings to be no longer than the limit.
      *
@@ -101,7 +97,7 @@ class Length implements \Caridea\Validate\Rule
     {
         return new Length('lt', $length, $encoding);
     }
-    
+
     /**
      * Gets a rule that requires strings to be no shorter than the limit.
      *
@@ -113,7 +109,7 @@ class Length implements \Caridea\Validate\Rule
     {
         return new Length('gt', $length, $encoding);
     }
-    
+
     /**
      * Gets a rule that requires strings to be exactly the length of the limit.
      *
@@ -125,7 +121,7 @@ class Length implements \Caridea\Validate\Rule
     {
         return new Length('eq', $length, $encoding);
     }
-    
+
     /**
      * Gets a rule that requires strings to have a minimum and maximum length.
      *

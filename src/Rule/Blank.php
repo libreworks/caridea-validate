@@ -15,16 +15,16 @@ declare(strict_types=1);
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 namespace Caridea\Validate\Rule;
 
 /**
  * Rules for empty values
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 class Blank implements \Caridea\Validate\Rule
 {
@@ -32,7 +32,7 @@ class Blank implements \Caridea\Validate\Rule
      * @var string The operator type
      */
     private $operator;
-    
+
     /**
      * Creates a new EmptyRule.
      *
@@ -42,15 +42,11 @@ class Blank implements \Caridea\Validate\Rule
     {
         $this->operator = $operator;
     }
-    
+
     /**
-     * Validates the provided value.
-     *
-     * @param mixed $value A value to validate against the rule
-     * @param array|object $data The dataset which contains this field
-     * @return array An array of error codes or null if validation succeeded
+     * {@inheritDoc}
      */
-    public function apply($value, $data = [])
+    public function apply($value, $data = []): ?array
     {
         switch ($this->operator) {
             case "required":
@@ -66,7 +62,7 @@ class Blank implements \Caridea\Validate\Rule
                 return count($value) === 0 ? ['CANNOT_BE_EMPTY'] : null;
         }
     }
-    
+
     /**
      * Gets a rule that requires values to be non-null and not empty string.
      *
@@ -76,7 +72,7 @@ class Blank implements \Caridea\Validate\Rule
     {
         return new Blank('required');
     }
-    
+
     /**
      * Gets a rule that requires strings to be non-empty.
      *
@@ -86,7 +82,7 @@ class Blank implements \Caridea\Validate\Rule
     {
         return new Blank('empty');
     }
-    
+
     /**
      * Gets a rule that requires an array or `Countable` to be non-empty.
      *

@@ -15,16 +15,16 @@ declare(strict_types=1);
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 namespace Caridea\Validate\Rule;
 
 /**
  * Rules for nested list and object validation.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 class Nested implements \Caridea\Validate\Draft
 {
@@ -87,13 +87,9 @@ class Nested implements \Caridea\Validate\Draft
     }
 
     /**
-     * Validates the provided value.
-     *
-     * @param mixed $value A value to validate against the rule
-     * @param array|object $data The dataset which contains this field
-     * @return array An array of error codes or null if validation succeeded
+     * {@inheritDoc}
      */
-    public function apply($value, $data = [])
+    public function apply($value, $data = []): ?array
     {
         if (!($this->validator instanceof \Caridea\Validate\Validator)) {
             throw new \BadMethodCallException("This rule is a Draft. Try calling the 'finish' method to get the full Rule.");

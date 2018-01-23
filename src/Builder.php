@@ -15,16 +15,16 @@ declare(strict_types=1);
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 namespace Caridea\Validate;
 
 /**
  * Builds validators.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 class Builder
 {
@@ -40,25 +40,11 @@ class Builder
     /**
      * Creates a new Validation Builder.
      *
-     * @param \Caridea\Validate\Registry $registry The registry. This argument will be required in 3.0.
+     * @param \Caridea\Validate\Registry $registry The registry.
      */
-    public function __construct(Registry $registry = null)
+    public function __construct(Registry $registry)
     {
-        $this->registry = $registry ?? new Registry();
-    }
-
-    /**
-     * Registers rule definitions into the registry.
-     *
-     * @param array $definitions Associative array of definition name to function callback
-     * @return $this provides a fluent interface
-     * @see \Caridea\Validate\Registry::register
-     * @deprecated 2.1.0:3.0.0 Use \Caridea\Validate\Registry::register instead
-     */
-    public function register(array $definitions): self
-    {
-        $this->registry->register($definitions);
-        return $this;
+        $this->registry = $registry;
     }
 
     /**

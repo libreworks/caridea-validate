@@ -15,16 +15,16 @@ declare(strict_types=1);
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 namespace Caridea\Validate\Rule;
 
 /**
  * Tests strings as valid timezone identifier.
  *
- * @copyright 2015-2016 LibreWorks contributors
- * @license   http://opensource.org/licenses/Apache-2.0 Apache 2.0 License
+ * @copyright 2015-2018 LibreWorks contributors
+ * @license   Apache-2.0
  */
 class Timezone implements \Caridea\Validate\Rule
 {
@@ -40,15 +40,11 @@ class Timezone implements \Caridea\Validate\Rule
     {
         $this->zones = timezone_identifiers_list(\DateTimeZone::ALL_WITH_BC);
     }
-    
+
     /**
-     * Validates the provided value.
-     *
-     * @param mixed $value A value to validate against the rule
-     * @param array|object $data The dataset which contains this field
-     * @return array An array of error codes or null if validation succeeded
+     * {@inheritDoc}
      */
-    public function apply($value, $data = [])
+    public function apply($value, $data = []): ?array
     {
         if (!is_string($value)) {
             return ['FORMAT_ERROR'];
