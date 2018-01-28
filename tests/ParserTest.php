@@ -30,10 +30,9 @@ class ParserTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsAssociative()
     {
-        $object = new Parser(new Registry());
-        $this->assertTrue($object->isAssociative(['foo' => 'bar']));
-        $this->assertTrue($object->isAssociative([0 => 'aoeu', 'foo' => 'bar']));
-        $this->assertFalse($object->isAssociative(['foo', 'bar']));
-        $this->assertFalse($object->isAssociative([0 => 'aoeu', 1 => 'bar']));
+        $this->assertTrue(Parser::isAssociative(['foo' => 'bar']));
+        $this->assertTrue(Parser::isAssociative([0 => 'aoeu', 'foo' => 'bar']));
+        $this->assertFalse(Parser::isAssociative(['foo', 'bar']));
+        $this->assertFalse(Parser::isAssociative([0 => 'aoeu', 1 => 'bar']));
     }
 }

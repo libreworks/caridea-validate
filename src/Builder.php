@@ -86,7 +86,7 @@ class Builder
     public function build($ruleset = null): Validator
     {
         $validators = array_merge([], $this->validators);
-        if (is_object($ruleset) || (is_array($ruleset) && $this->parser->isAssociative($ruleset))) {
+        if (is_object($ruleset) || (is_array($ruleset) && Parser::isAssociative($ruleset))) {
             foreach ($ruleset as $field => $rules) {
                 $validators[$field] = $this->parser->parse($rules);
             }

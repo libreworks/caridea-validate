@@ -77,6 +77,7 @@ class Nested implements \Caridea\Validate\Draft
                     $rule->validator = $builder->build((object)['entry' => $this->validator]);
                     return $rule;
                 case "list_different_objects":
+                case "variable_object":
                     $validators = [];
                     foreach ($this->validator as $value => $ruleset) {
                         $validators[$value] = $builder->build($ruleset);
@@ -100,6 +101,7 @@ class Nested implements \Caridea\Validate\Draft
         }
         switch ($this->operator) {
             case "nested_object":
+            case "variable_object":
                 $result = $this->validator->validate($value);
                 return $result->hasErrors() ? $result->getErrors() : null;
             case "list":
@@ -135,6 +137,18 @@ class Nested implements \Caridea\Validate\Draft
     public static function nestedObject(\stdClass $ruleset): Nested
     {
         return new Nested("nested_object", $ruleset);
+    }
+
+    /**
+     * Verifies an object value using one of several validators based on a field value.
+     *
+     * @param string $field The deciding field name
+     * @param object $rulesets The rulesets
+     * @return \Caridea\Validate\Rule\Nested the created rule
+     */
+    public static function variableObject(string $field, \stdClass $rulesets): Nested
+    {
+        return new Nested("variable_object", $rulesets, $field);
     }
 
     /**

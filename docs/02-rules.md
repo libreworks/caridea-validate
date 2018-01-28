@@ -10,6 +10,8 @@ The `Registry` has a number of functions that you can use out of the box. Almost
 * `required` – Fails if a value is `null` or an empty string
 * `not_empty` – Fails if a value is an empty string
 * `not_empty_list` – Fails if a `count` returns `0`
+* `any_object` – Fails if a value is not an `object` or an associative `array`
+* `string` – Fails if a value is not a `string`, `int`, `float`, or `bool`
 * `one_of` – Fails if a value is not in a list of acceptable choices
 * `eq` – Fails if a value is not equal to the provided value (like `one_of` with only one option)
 * `min_length` – Fails if a string is shorter than an acceptable length
@@ -25,13 +27,14 @@ The `Registry` has a number of functions that you can use out of the box. Almost
 * `max_number` – Fails if a number is greater than an upper bound
 * `number_between` – Fails if a number does not fall within the specified range
 * `email` – Fails if a string is not a valid email address
-* `iso_date` – Fails if a string is not a valid ISO 8601 date (year, month, day only)
+* `iso_date` – Fails if a string is not a valid ISO 8601 date (e.g. `2018-01-01`)
 * `url` – Fails if a string is not a valid URL
 * `equal_to_field` – Fails if a value is not equal to a different field on the same object under validation
 * `timezone` – Fails if a string is not a valid timezone identifier (e.g. `America/New_York`) (this rule is not part of the LIVR specification)
 
 ### Meta-rules
 * `nested_object` – Allows you to specify rules for a nested object
+* `variable_object` – Allows you to specify rules for a nested object, but also declare alternate rules depending on the value of an object property
 * `list_of` – Allows you to specify rules for the elements of a list
 * `list_of_objects` – Allows you to specify rules for objects within a list
 * `list_of_different_objects` – Allows you to specify rules for objects within a list, but also declare alternate rules depending on the value of an object property

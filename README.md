@@ -39,13 +39,15 @@ Our code is intended to comply with [PSR-1](http://www.php-fig.org/psr/psr-1/), 
 
 We fully support the JSON rule format as defined by the LIVR spec. However, we do not support the v0.4 style declaration for the `one_of` and `list_of` rules.
 
-For the most part, we support all rules and their return codes as defined by the spec with some notable exceptions. We did not implement the following rules:
+For the most part, we support all rules and their return codes as defined by version 2.0 of the specification with some notable exceptions. We did not implement the following rules:
 
 * `trim` – This is part of filtering, not validation.
 * `to_lc` – This is part of filtering, not validation.
 * `to_uc` – This is part of filtering, not validation.
 * `remove` – This is part of filtering, not validation.
 * `leave_only` – This is part of filtering, not validation.
+* `default` – This is part of filtering, not validation.
+* `or` – This is experimental.
 
 We now support alias definitions!
 

@@ -48,7 +48,7 @@ class Parser
      * @param array $array The array to test
      * @return bool Whether the array is associative
      */
-    public function isAssociative(array $array): bool
+    public static function isAssociative(array $array): bool
     {
         return count(array_filter(array_keys($array), 'is_string')) > 0;
     }
@@ -62,7 +62,7 @@ class Parser
     public function parse($rules): Rule\Set
     {
         $isArray = is_array($rules);
-        $isAssoc = $isArray && $this->isAssociative($rules);
+        $isAssoc = $isArray && self::isAssociative($rules);
         $set = null;
         if (is_string($rules) || is_object($rules) || $isAssoc) {
             $set = $this->getRule($rules);

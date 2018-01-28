@@ -126,4 +126,24 @@ class NestedTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([['name' => 'REQUIRED'], ['email' => 'WRONG_EMAIL']], $rule->apply([['type' => 'foo'], ['type' => 'bar', 'email' => 'aoeu']]));
         $this->assertSame($rule, $rule->finish($registry));
     }
+
+    /**
+     * @covers Caridea\Validate\Rule\Nested::variableObject
+     * @covers Caridea\Validate\Rule\Nested::__construct
+     * @covers Caridea\Validate\Rule\Nested::finish
+     * @covers Caridea\Validate\Rule\Nested::apply
+     */
+    public function testVariableObject()
+    {
+        $registry = new \Caridea\Validate\Registry();
+        $object = Nested::variableObject('type', (object)['foo' => (object)['name' => 'required'], 'bar' => (object)['email' => 'email']]);
+        $rule = $object->finish($registry);
+        $this->assertNull($rule->apply(['type' => 'foo', 'name' => 'hey']));
+        $this->assertNull($rule->apply(['type' => 'bar', 'email' => 'me@example.com']));
+        $this->assertNull($rule->apply(['type' => 'foo', 'name' => 'hey']));
+        $this->assertNull($rule->apply(['type' => 'bar', 'email' => 'me@example.com']));
+        $this->assertEquals(['name' => 'REQUIRED'], $rule->apply(['type' => 'foo']));
+        $this->assertEquals(['email' => 'WRONG_EMAIL'], $rule->apply(['type' => 'bar', 'email' => 'aoeu']));
+        $this->assertSame($rule, $rule->finish($registry));
+    }
 }
