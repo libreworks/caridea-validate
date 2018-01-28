@@ -39,6 +39,7 @@ class TimezoneTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers Caridea\Validate\Rule\Timezone::__construct
      * @covers Caridea\Validate\Rule\Timezone::apply
      * @covers Caridea\Validate\Rule\Timezone::timezone
      */

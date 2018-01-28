@@ -26,6 +26,29 @@ namespace Caridea\Validate\Rule;
 class CompareTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @covers Caridea\Validate\Rule\Compare::eq
+     * @covers Caridea\Validate\Rule\Compare::__construct
+     * @covers Caridea\Validate\Rule\Compare::apply
+     */
+    public function testEq()
+    {
+        $object = Compare::eq('ok');
+
+        $format = [[], $object];
+        foreach ($format as $v) {
+            $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
+        }
+        $null = ['ok'];
+        foreach ($null as $v) {
+            $this->assertNull($object->apply($v));
+        }
+        $error = [0, false, 'bad', 1.1];
+        foreach ($error as $v) {
+            $this->assertEquals(['NOT_ALLOWED_VALUE'], $object->apply($v));
+        }
+    }
+
+    /**
      * @covers Caridea\Validate\Rule\Compare::oneOf
      * @covers Caridea\Validate\Rule\Compare::__construct
      * @covers Caridea\Validate\Rule\Compare::apply
@@ -33,7 +56,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testOneOf()
     {
         $object = Compare::oneOf([1, 2, 'ok', 'yup']);
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -56,7 +79,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testMax()
     {
         $object = Compare::max(50);
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -79,7 +102,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testMin()
     {
         $object = Compare::min(50);
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -102,7 +125,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testBetween()
     {
         $object = Compare::between(10, 20);
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -129,7 +152,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testInteger()
     {
         $object = Compare::integer();
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -152,7 +175,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testPositiveInteger()
     {
         $object = Compare::positiveInteger();
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -175,7 +198,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testDecimal()
     {
         $object = Compare::decimal();
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -198,7 +221,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     public function testPositiveDecimal()
     {
         $object = Compare::positiveDecimal();
-        
+
         $format = [[], $object];
         foreach ($format as $v) {
             $this->assertEquals(['FORMAT_ERROR'], $object->apply($v));
@@ -214,14 +237,14 @@ class CompareTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Caridea\Validate\Rule\Compare::decimal
+     * @covers Caridea\Validate\Rule\Compare::equalToField
      * @covers Caridea\Validate\Rule\Compare::__construct
      * @covers Caridea\Validate\Rule\Compare::apply
      */
     public function testEqualToField()
     {
         $object = Compare::equalToField('password');
-        
+
         $pw = 'correct horse battery staple';
         $data = ['password' => $pw];
         $this->assertNull($object->apply($pw, $data));
@@ -229,5 +252,6 @@ class CompareTest extends \PHPUnit\Framework\TestCase
         foreach ($error as $v) {
             $this->assertEquals(['FIELDS_NOT_EQUAL'], $object->apply($v, $data));
         }
+        $this->assertEquals(['FORMAT_ERROR'], $object->apply([], $data));
     }
 }

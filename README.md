@@ -47,7 +47,7 @@ For the most part, we support all rules and their return codes as defined by the
 * `remove` – This is part of filtering, not validation.
 * `leave_only` – This is part of filtering, not validation.
 
-We have not implemented aliases (yet?).
+We now support alias definitions!
 
 We did add an extra validator: `timezone`! It gives the error `WRONG_TIMEZONE` if the string provided isn't a valid timezone identifier.
 
@@ -73,15 +73,16 @@ $validator = $builder->build($ruleset);
 ```
 ```php
 $registry = new \Caridea\Filter\Registry();
-$filter = $builder->field('name', 'required')
+$builder = $registry->builder();
+$validator = $builder->field('name', 'required')
     ->field('email', 'required', 'email')
     ->field('drinks', ['one_of' => [['coffee', 'tea']]])
     ->field('phone', ['max_length' => 10])
     ->build();
 ```
 
-You can either inspect the validation results, or throw an exception containing
-any errors.
+You can either inspect the validation results, or throw an exception containing any errors.
+
 ```php
 $input = [
     'foo' => 'bar',
@@ -93,6 +94,7 @@ $validator->assert($input);
 ```
 
 You can register your own custom rules in the `Registry`.
+
 ```php
 $registry = new \Caridea\Validate\Registry();
 $registry->register([

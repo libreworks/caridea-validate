@@ -29,6 +29,10 @@ class Registry
      * @var array<string,callable> Associative array of definition name to function callback
      */
     private $definitions = [];
+    /**
+     * @var \Caridea\Validate\Parser The parser
+     */
+    private $parser;
 
     /**
      * @var array<string,callable> Associative array of definition name to function callback
@@ -37,6 +41,7 @@ class Registry
         'required'         => ['Caridea\Validate\Rule\Blank', 'required'],
         'not_empty'        => ['Caridea\Validate\Rule\Blank', 'notEmpty'],
         'not_empty_list'   => ['Caridea\Validate\Rule\Blank', 'notEmptyList'],
+        'eq'               => ['Caridea\Validate\Rule\Compare', 'eq'],
         'one_of'           => ['Caridea\Validate\Rule\Compare', 'oneOf'],
         'min_length'       => ['Caridea\Validate\Rule\Length', 'min'],
         'max_length'       => ['Caridea\Validate\Rule\Length', 'max'],
@@ -67,6 +72,7 @@ class Registry
     public function __construct()
     {
         $this->definitions = array_merge([], self::$defaultDefinitions);
+        $this->parser = new Parser($this);
     }
 
     /**
@@ -93,6 +99,59 @@ class Registry
             $this->definitions[$name] = $callback;
         }
         return $this;
+    }
+
+    /**
+     * Registers an alias for a ruleset.
+     *
+     * @param string $name The name of the alias
+     * @param object|array $rules The ruleset to alias
+     * @param string|null $error A custom error code to return, or `null` to use normal codes
+     * @return $this provides a fluent interface
+     */
+    public function alias(string $name, $rules, ?string $error = null): self
+    {
+        $this->definitions[$name] = function () use ($rules, $error) {
+            return $this->parser->parse($rules)->setError($error);
+        };
+        return $this;
+    }
+
+    /**
+     * Registers an alias for a ruleset, using a LIVR-compliant definition.
+     *
+     * ```javascript
+     * // alias.json
+     * {
+     *     "name": "valid_address",
+     *     "rules": { "nested_object": {
+     *         "country": "required",
+     *         "city": "required",
+     *         "zip": "positive_integer"
+     *     }},
+     *     error: "WRONG_ADDRESS"
+     * }
+     * ```
+     * ```php
+     * $registry->aliasDefinition(json_decode(file_get_contents('alias.json')));
+     * ```
+     *
+     * @param array|object $definition The rule definition
+     * @return $this provides a fluent interface
+     * @throws \InvalidArgumentException if the definition is invalid
+     */
+    public function aliasDefinition($definition): self
+    {
+        if (is_object($definition)) {
+            $definition = (array) $definition;
+        }
+        if (!is_array($definition)) {
+            throw new \InvalidArgumentException("Invalid alias definition: must be an object or an associative array");
+        }
+        if (!isset($definition['name']) || !isset($definition['rules'])) {
+            throw new \InvalidArgumentException("Invalid alias definition: must have 'name' and 'rules' fields");
+        }
+        return $this->alias($definition['name'], $definition['rules'], $definition['error'] ?? null);
     }
 
     /**
@@ -125,6 +184,6 @@ class Registry
      */
     public function builder(): Builder
     {
-        return new Builder($this);
+        return new Builder($this->parser);
     }
 }

@@ -55,6 +55,9 @@ class Compare implements \Caridea\Validate\Rule
     public function apply($value, $data = []): ?array
     {
         if ("eqf" === $this->operator) {
+            if ($value !== null && !is_scalar($value)) {
+                return ['FORMAT_ERROR'];
+            }
             return $value === $this->access($data, $this->operand) ?
                 null : ['FIELDS_NOT_EQUAL'];
         }
@@ -107,6 +110,17 @@ class Compare implements \Caridea\Validate\Rule
     protected function access($values, string $field)
     {
         return isset($values[$field]) ? $values[$field] : null;
+    }
+
+    /**
+     * Gets a rule that matches a value against another value.
+     *
+     * @param string $value The accepted value
+     * @return \Caridea\Validate\Rule\Compare the created rule
+     */
+    public static function eq(string $value): Compare
+    {
+        return new Compare('in', [$value]);
     }
 
     /**

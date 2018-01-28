@@ -28,11 +28,11 @@ class BuilderTest extends \PHPUnit\Framework\TestCase
      * @covers Caridea\Validate\Builder::__construct
      * @covers Caridea\Validate\Builder::field
      * @covers Caridea\Validate\Builder::build
-     * @covers Caridea\Validate\Builder::getRule
+     * @covers Caridea\Validate\Parser::getRule
      */
     public function testField()
     {
-        $object= new Builder(new Registry());
+        $object = new Builder(new Parser(new Registry()));
         $this->assertSame($object, $object->field('name', 'required'));
         $this->assertSame($object, $object->field('email', 'required', ['email' => '']));
         $this->assertSame($object, $object->field('gender', ['one_of' => [['female']]]));
@@ -44,7 +44,28 @@ class BuilderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Caridea\Validate\Builder::getRule
+     * @covers Caridea\Validate\Builder::__construct
+     * @covers Caridea\Validate\Builder::field
+     * @covers Caridea\Validate\Builder::build
+     * @covers Caridea\Validate\Parser::getRule
+     */
+    public function testBuild()
+    {
+        $object = new Builder(new Parser(new Registry()));
+        $ruleset = [
+            'name' => 'required',
+            'email' => ['required', ['email' => '']],
+            'gender' => ['one_of' => [['female']]],
+            'phone' => (object)['max_length' => 10],
+            'password2' => (object)['equal_to_field' => 'password'],
+        ];
+        $validator = $object->build($ruleset);
+        $result = $validator->validate(['name' => null, 'email' => 'foo', 'gender' => 'male', 'phone' => '123123123123', 'password' => 'hello', 'password2' => 'goodbye']);
+        $this->assertEquals(['name' => 'REQUIRED', 'email' => 'WRONG_EMAIL', 'gender' => 'NOT_ALLOWED_VALUE', 'phone' => 'TOO_LONG', 'password2' => 'FIELDS_NOT_EQUAL'], $result->getErrors());
+    }
+
+    /**
+     * @covers Caridea\Validate\Parser::getRule
      * @expectedException \UnexpectedValueException
      * @expectedExceptionMessage Definitions must return Rule objects
      */
@@ -55,12 +76,12 @@ class BuilderTest extends \PHPUnit\Framework\TestCase
         ];
         $registry = new Registry();
         $registry->register(['custom' => [$this, 'foo']]);
-        $object = new Builder($registry);
+        $object = new Builder(new Parser($registry));
         $object->build($ruleset);
     }
 
     /**
-     * @covers Caridea\Validate\Builder::getRule
+     * @covers Caridea\Validate\Parser::getRule
      */
     public function testDraft()
     {
@@ -69,7 +90,7 @@ class BuilderTest extends \PHPUnit\Framework\TestCase
         ];
         $registry = new Registry();
         $registry->register(['custom' => [$this, 'bar']]);
-        $object = new Builder($registry);
+        $object = new Builder(new Parser($registry));
         $object->build($ruleset);
         $this->verifyMockObjects();
     }

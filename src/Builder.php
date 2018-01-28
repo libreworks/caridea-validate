@@ -29,22 +29,22 @@ namespace Caridea\Validate;
 class Builder
 {
     /**
-     * @var \Caridea\Validate\Registry
+     * @var \Caridea\Validate\Parser
      */
-    private $registry;
+    private $parser;
     /**
-     * @var array<string,array<Rule>>
+     * @var array<string,\Caridea\Validate\Rule\Set>
      */
     private $validators = [];
 
     /**
      * Creates a new Validation Builder.
      *
-     * @param \Caridea\Validate\Registry $registry The registry.
+     * @param \Caridea\Validate\Parser $parser The parser.
      */
-    public function __construct(Registry $registry)
+    public function __construct(Parser $parser)
     {
-        $this->registry = $registry;
+        $this->parser = $parser;
     }
 
     /**
@@ -57,11 +57,7 @@ class Builder
      */
     public function field(string $field, ...$rules): self
     {
-        $vrules = [];
-        foreach ($rules as $rule) {
-            $vrules = array_merge($vrules, $this->getRule($rule));
-        }
-        $this->validators[$field] = $vrules;
+        $this->validators[$field] = $this->parser->parse($rules);
         return $this;
     }
 
@@ -90,47 +86,11 @@ class Builder
     public function build($ruleset = null): Validator
     {
         $validators = array_merge([], $this->validators);
-        if (is_object($ruleset) || (is_array($ruleset) && count(array_filter(array_keys($ruleset), 'is_string')) > 0)) {
+        if (is_object($ruleset) || (is_array($ruleset) && $this->parser->isAssociative($ruleset))) {
             foreach ($ruleset as $field => $rules) {
-                $isArray = is_array($rules);
-                $isAssoc = $isArray &&
-                    count(array_filter(array_keys($rules), 'is_string')) > 0;
-                if (is_string($rules) || is_object($rules) || $isAssoc) {
-                    $validators[$field] = $this->getRule($rules);
-                } elseif ($isArray) {
-                    $setup = [];
-                    foreach ($rules as $v) {
-                        $setup = array_merge($setup, $this->getRule($v));
-                    }
-                    $validators[$field] = $setup;
-                }
+                $validators[$field] = $this->parser->parse($rules);
             }
         }
         return new Validator($validators);
-    }
-
-    /**
-     * Parses rule definitions.
-     *
-     * @param string|object|array $rule Either a string name, an associative
-     *        array, or an object with name → arguments
-     * @param mixed $arg Optional constructor argument, or an array of arguments
-     * @return array<Rule> An array of instantiated rules
-     */
-    protected function getRule($rule, $arg = null): array
-    {
-        $rules = [];
-        if (is_string($rule)) {
-            $vrule = $this->registry->factory($rule, $arg);
-            if ($vrule instanceof Draft) {
-                $vrule = $vrule->finish($this);
-            }
-            $rules[] = $vrule;
-        } elseif (is_object($rule) || is_array($rule)) {
-            foreach ($rule as $name => $args) {
-                $rules = array_merge($rules, $this->getRule($name, $args));
-            }
-        }
-        return $rules;
     }
 }

@@ -34,13 +34,13 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->method('apply')
             ->willReturn(['SUPER_ERROR']);
         $object = new Validator([
-            'foo' => [$rule]
+            'foo' => new Rule\Set([$rule])
         ]);
         $result = $object->validate(['foo' => 'bar']);
         $this->assertEquals(['foo' => 'SUPER_ERROR'], $result->getErrors());
         $this->verifyMockObjects();
     }
-    
+
     /**
      * @covers Caridea\Validate\Validator::iterate
      * @expectedException \InvalidArgumentException
@@ -50,7 +50,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $object = new Validator([]);
         $object->validate(123);
     }
-    
+
     /**
      * @covers Caridea\Validate\Validator::assert
      */
@@ -61,12 +61,12 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->method('apply')
             ->willReturn(null);
         $object = new Validator([
-            'foo' => [$rule]
+            'foo' => new Rule\Set([$rule]),
         ]);
         $object->assert(['foo' => 'bar']);
         $this->verifyMockObjects();
     }
-    
+
     /**
      * @covers Caridea\Validate\Validator::assert
      * @expectedException \Caridea\Validate\Exception\Invalid
@@ -79,7 +79,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->method('apply')
             ->willReturn(['SUPER_ERROR']);
         $object = new Validator([
-            'foo' => [$rule]
+            'foo' => new Rule\Set([$rule]),
         ]);
         $object->assert(['foo' => 'bar']);
     }

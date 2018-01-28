@@ -29,14 +29,14 @@ namespace Caridea\Validate;
 class Validator
 {
     /**
-     * @var array<string,array<Rule>> Associative array of field name to list of rules
+     * @var array<string,\Caridea\Validate\Rule\Set> Associative array of field name to rule set
      */
     protected $ruleset;
 
     /**
      * Creates a new validator.
      *
-     * @param array<string,array<Rule>> $ruleset Associative array of field name to list of rules
+     * @param array<string,\Caridea\Validate\Rule\Set> $ruleset Associative array of field name to rule set
      */
     public function __construct(array $ruleset)
     {
@@ -73,17 +73,10 @@ class Validator
         $errors = [];
         foreach ($this->ruleset as $field => $rules) {
             $value = $this->access($values, $field);
-            $empty = $value === null || $value === '';
-            foreach ($rules as $rule) {
-                $error = (!$empty || $rule instanceof Rule\Blank) ?
-                    $rule->apply($value, $values) : null;
-                if (is_array($error) && count($error) > 0) {
-                    $errors[$field] = count($error) > 1 ? $error : current($error);
-                    break;
-                } elseif ($error !== null) {
-                    $errors[$field] = $error;
-                    break;
-                }
+            $error = $rules->apply($value, $values);
+            if ($error !== null) {
+                $errors[$field] = count($error) > 1 || count(array_filter(array_keys($error), 'is_string')) > 0 ?
+                    $error : current($error);
             }
         }
         return $errors;

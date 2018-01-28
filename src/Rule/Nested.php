@@ -58,15 +58,16 @@ class Nested implements \Caridea\Validate\Draft
     /**
      * Finishes creating a rule using the parent builder.
      *
-     * @param \Caridea\Validate\Builder $builder
+     * @param \Caridea\Validate\Registry $registry
      * @return \Caridea\Validate\Rule The fully created rule
      */
-    public function finish(\Caridea\Validate\Builder $builder): \Caridea\Validate\Rule
+    public function finish(\Caridea\Validate\Registry $registry): \Caridea\Validate\Rule
     {
         if ($this->validator instanceof \Caridea\Validate\Validator) {
             return $this;
         } else {
             $rule = clone $this;
+            $builder = $registry->builder();
             switch ($this->operator) {
                 case "nested_object":
                 case "list_objects":

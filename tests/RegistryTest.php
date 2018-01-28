@@ -39,6 +39,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers Caridea\Validate\Registry::__construct
+     * @covers Caridea\Validate\Parser::__construct
      * @covers Caridea\Validate\Registry::register
      */
     public function testRegister()
@@ -105,6 +106,161 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $registry = new Registry();
         $builder = $registry->builder();
         $this->assertInstanceOf(Builder::class, $builder);
-        $this->assertAttributeSame($registry, 'registry', $builder);
+        $this->assertAttributeInstanceOf(Parser::class, 'parser', $builder);
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::alias
+     * @covers Caridea\Validate\Parser::parse
+     * @covers Caridea\Validate\Parser::getRule
+     */
+    public function testAlias()
+    {
+        $registry = new Registry();
+        $definition = (object)[
+            'nested_object' => (object)[
+                'country' => 'required',
+                'city' => 'required',
+                'zip' => 'positive_integer',
+            ]
+        ];
+        $this->assertSame($registry, $registry->alias('valid_address', $definition));
+        $parser = new Parser($registry);
+        $rule = $parser->getRule('valid_address');
+        $this->assertInstanceOf(Rule\Set::class, $rule);
+        $this->assertNull($rule->apply(['country' => 'US', 'city' => 'Somewhere', 'zip' => 12345]));
+        $this->assertEquals(['country' => 'REQUIRED', 'city' => 'REQUIRED', 'zip' => 'NOT_POSITIVE_INTEGER'], $rule->apply(['zip' => 'hi']));
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::alias
+     * @covers Caridea\Validate\Parser::parse
+     * @covers Caridea\Validate\Parser::getRule
+     */
+    public function testAliasError()
+    {
+        $registry = new Registry();
+        $definition = (object)[
+            'nested_object' => (object)[
+                'country' => 'required',
+                'city' => 'required',
+                'zip' => 'positive_integer',
+            ]
+        ];
+        $this->assertSame($registry, $registry->alias('valid_address', $definition, 'WRONG_ADDRESS'));
+        $parser = new Parser($registry);
+        $rule = $parser->getRule('valid_address');
+        $this->assertInstanceOf(Rule\Set::class, $rule);
+        $this->assertNull($rule->apply(['country' => 'US', 'city' => 'Somewhere', 'zip' => 12345]));
+        $this->assertEquals(['WRONG_ADDRESS'], $rule->apply(['zip' => 'hi']));
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::alias
+     * @covers Caridea\Validate\Parser::parse
+     * @covers Caridea\Validate\Parser::getRule
+     */
+    public function testAlias2()
+    {
+        $registry = new Registry();
+        $definition = [ 'positive_integer', [ 'min_number' => 18 ] ];
+        $this->assertSame($registry, $registry->alias('adult_age', $definition));
+        $parser = new Parser($registry);
+        $rule = $parser->getRule('adult_age');
+        $this->assertInstanceOf(Rule\Set::class, $rule);
+        $this->assertNull($rule->apply(19));
+        $this->assertEquals(['NOT_POSITIVE_INTEGER'], $rule->apply('a'));
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::alias
+     * @covers Caridea\Validate\Parser::parse
+     * @covers Caridea\Validate\Parser::getRule
+     */
+    public function testAlias2Error()
+    {
+        $registry = new Registry();
+        $definition = [ 'positive_integer', [ 'min_number' => 18 ] ];
+        $this->assertSame($registry, $registry->alias('adult_age', $definition, 'WRONG_AGE'));
+        $parser = new Parser($registry);
+        $rule = $parser->getRule('adult_age');
+        $this->assertInstanceOf(Rule\Set::class, $rule);
+        $this->assertNull($rule->apply(19));
+        $this->assertEquals(['WRONG_AGE'], $rule->apply('a'));
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::aliasDefinition
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid alias definition: must be an object or an associative array
+     */
+    public function testAliasDefinitionArguments()
+    {
+        $registry = new Registry();
+        $registry->aliasDefinition('foo');
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::aliasDefinition
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid alias definition: must have 'name' and 'rules' fields
+     */
+    public function testAliasDefinitionArguments2()
+    {
+        $registry = new Registry();
+        $registry->aliasDefinition(['foo' => 'bar']);
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::aliasDefinition
+     * @covers Caridea\Validate\Registry::alias
+     * @covers Caridea\Validate\Parser::getRule
+     */
+    public function testAliasDefinition()
+    {
+        $registry = new Registry();
+        $definition = (object)[
+            'name' => 'valid_address',
+            'rules' => (object)[
+                'nested_object' => (object)[
+                    'country' => 'required',
+                    'city' => 'required',
+                    'zip' => 'positive_integer',
+                ]
+            ],
+        ];
+        $this->assertSame($registry, $registry->aliasDefinition($definition));
+        $parser = new Parser($registry);
+        $rule = $parser->getRule('valid_address');
+        $this->assertInstanceOf(Rule\Set::class, $rule);
+        $this->assertNull($rule->apply(['country' => 'US', 'city' => 'Somewhere', 'zip' => 12345]));
+        $this->assertEquals(['country' => 'REQUIRED', 'city' => 'REQUIRED', 'zip' => 'NOT_POSITIVE_INTEGER'], $rule->apply(['zip' => 'hi']));
+    }
+
+    /**
+     * @covers Caridea\Validate\Registry::aliasDefinition
+     * @covers Caridea\Validate\Registry::alias
+     * @covers Caridea\Validate\Parser::getRule
+     */
+    public function testAliasDefinitionError()
+    {
+        $registry = new Registry();
+        $definition = (object)[
+            'name' => 'valid_address',
+            'rules' => (object)[
+                'nested_object' => (object)[
+                    'country' => 'required',
+                    'city' => 'required',
+                    'zip' => 'positive_integer',
+                ]
+            ],
+            'error' => 'WRONG_ADDRESS',
+        ];
+        $this->assertSame($registry, $registry->aliasDefinition($definition));
+        $parser = new Parser($registry);
+        $rule = $parser->getRule('valid_address');
+        $this->assertInstanceOf(Rule\Set::class, $rule);
+        $this->assertNull($rule->apply(['country' => 'US', 'city' => 'Somewhere', 'zip' => 12345]));
+        $this->assertEquals(['WRONG_ADDRESS'], $rule->apply(['zip' => 'hi']));
     }
 }

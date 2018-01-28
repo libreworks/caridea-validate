@@ -35,18 +35,33 @@ class NestedTest extends \PHPUnit\Framework\TestCase
         $object = Nested::nestedObject((object)['name' => 'required']);
         $object->apply(null);
     }
-    
+
+    /**
+     * @covers Caridea\Validate\Rule\Nested::apply
+     */
+    public function testNoRuleLeak()
+    {
+        $registry = new \Caridea\Validate\Registry();
+        $builder = $registry->builder();
+        $validator = $builder->field('foo', 'required')
+            ->field('bar', ['nested_object' => (object) ['name' => 'required']])
+            ->build();
+        $result = $validator->validate(['foo' => null, 'bar' => ['name' => null]]);
+        $this->assertTrue($result->hasErrors());
+        $this->assertEquals(['foo' => 'REQUIRED', 'bar' => ['name' => 'REQUIRED']], $result->getErrors());
+    }
+
     /**
      * @covers Caridea\Validate\Rule\Nested::apply
      */
     public function testArgument()
     {
-        $builder = new \Caridea\Validate\Builder(new \Caridea\Validate\Registry());
+        $registry = new \Caridea\Validate\Registry();
         $object = Nested::nestedObject((object)['name' => 'required']);
-        $rule = $object->finish($builder);
+        $rule = $object->finish($registry);
         $this->assertEquals(['FORMAT_ERROR'], $rule->apply(123));
     }
-    
+
     /**
      * @covers Caridea\Validate\Rule\Nested::nestedObject
      * @covers Caridea\Validate\Rule\Nested::__construct
@@ -55,12 +70,12 @@ class NestedTest extends \PHPUnit\Framework\TestCase
      */
     public function testNestedObject()
     {
-        $builder = new \Caridea\Validate\Builder(new \Caridea\Validate\Registry());
+        $registry = new \Caridea\Validate\Registry();
         $object = Nested::nestedObject((object)['name' => 'required']);
-        $rule = $object->finish($builder);
+        $rule = $object->finish($registry);
         $this->assertNull($rule->apply(['name' => 'hey']));
         $this->assertEquals(['name' => 'REQUIRED'], $rule->apply([]));
-        $this->assertSame($rule, $rule->finish($builder));
+        $this->assertSame($rule, $rule->finish($registry));
     }
 
     /**
@@ -71,12 +86,12 @@ class NestedTest extends \PHPUnit\Framework\TestCase
      */
     public function testListOf()
     {
-        $builder = new \Caridea\Validate\Builder(new \Caridea\Validate\Registry());
+        $registry = new \Caridea\Validate\Registry();
         $object = Nested::listOf(['required', 'email']);
-        $rule = $object->finish($builder);
+        $rule = $object->finish($registry);
         $this->assertNull($rule->apply(['foo@example.com', 'foo.bar@example.com']));
         $this->assertEquals(['REQUIRED', 'WRONG_EMAIL'], $rule->apply(['', 'foo.bar@']));
-        $this->assertSame($rule, $rule->finish($builder));
+        $this->assertSame($rule, $rule->finish($registry));
     }
 
     /**
@@ -87,12 +102,12 @@ class NestedTest extends \PHPUnit\Framework\TestCase
      */
     public function testListOfObjects()
     {
-        $builder = new \Caridea\Validate\Builder(new \Caridea\Validate\Registry());
+        $registry = new \Caridea\Validate\Registry();
         $object = Nested::listOfObjects((object)['name' => 'required']);
-        $rule = $object->finish($builder);
+        $rule = $object->finish($registry);
         $this->assertNull($rule->apply([['name' => 'hey'], ['name' => 'hi']]));
         $this->assertEquals([['name' => 'REQUIRED'], 'FORMAT_ERROR'], $rule->apply([['age' => 21], 123]));
-        $this->assertSame($rule, $rule->finish($builder));
+        $this->assertSame($rule, $rule->finish($registry));
     }
 
     /**
@@ -103,12 +118,12 @@ class NestedTest extends \PHPUnit\Framework\TestCase
      */
     public function testListOfDifferentObjects()
     {
-        $builder = new \Caridea\Validate\Builder(new \Caridea\Validate\Registry());
+        $registry = new \Caridea\Validate\Registry();
         $object = Nested::listOfDifferentObjects('type', (object)['foo' => (object)['name' => 'required'], 'bar' => (object)['email' => 'email']]);
-        $rule = $object->finish($builder);
+        $rule = $object->finish($registry);
         $this->assertNull($rule->apply([['type' => 'foo', 'name' => 'hey'], ['type' => 'bar', 'email' => 'me@example.com']]));
         $this->assertNull($rule->apply([['type' => 'foo', 'name' => 'hey'], ['type' => 'bar', 'email' => 'me@example.com']]));
         $this->assertEquals([['name' => 'REQUIRED'], ['email' => 'WRONG_EMAIL']], $rule->apply([['type' => 'foo'], ['type' => 'bar', 'email' => 'aoeu']]));
-        $this->assertSame($rule, $rule->finish($builder));
+        $this->assertSame($rule, $rule->finish($registry));
     }
 }
